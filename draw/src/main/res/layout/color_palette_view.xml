@@ -45,7 +45,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:paddingStart="12dp"
-        android:paddingEnd="12dp" />
+        android:paddingEnd="12dp" />x
 
     <ImageView
         android:id="@+id/image_color_blue"
