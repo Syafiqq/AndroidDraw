@@ -5,13 +5,14 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.DrawingActivity">
+    tools:context=".activity.DrawingActivity"
+    android:background="@color/color_white">
 
     <com.divyanshu.draw.widget.DrawView
         android:id="@+id/draw_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_white" />
+        android:background="@color/color_transparent" />
 
     <ImageView
         android:id="@+id/image_close_drawing"
