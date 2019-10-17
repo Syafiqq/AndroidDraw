@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/md_dialog_frame_margin_horizontal"
+    android:paddingRight="@dimen/md_dialog_frame_margin_horizontal"
+    android:paddingBottom="@dimen/md_dialog_frame_margin_vertical_less">
+
+    <SeekBar
+        android:id="@+id/seekBar3"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="40"
+        android:progress="1"
+        app:layout_constraintBottom_toTopOf="@+id/md_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/md_input_layout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/md_input_layout"
+        style="@style/MD_Dialog_Input_Layout"
+        app:hintEnabled="false"
+        app:layout_constraintBottom_toTopOf="@+id/seekBar3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/md_input_message"
+            style="@style/MD_Dialog_Input_Layout.Message"
+            tools:text="Hello, World!" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
