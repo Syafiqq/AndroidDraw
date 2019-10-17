@@ -96,7 +96,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     fun getBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(Color.TRANSPARENT)
         mIsSaving = true
         draw(canvas)
         mIsSaving = false
