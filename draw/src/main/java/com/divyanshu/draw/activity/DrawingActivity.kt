@@ -11,7 +11,12 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.ImageViewCompat
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.SeekBar
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.ModalDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.divyanshu.draw.R
 import com.divyanshu.draw.widget.DrawView
 import kotlinx.android.synthetic.main.activity_drawing.*
@@ -25,7 +30,7 @@ class DrawingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_drawing)
 
         image_close_drawing.setOnClickListener {
-            finish()
+            //finish()
         }
         fab_send_drawing.setOnClickListener {
             val bStream = ByteArrayOutputStream()
@@ -36,6 +41,13 @@ class DrawingActivity : AppCompatActivity() {
             returnIntent.putExtra("bitmap", byteArray)
             setResult(Activity.RESULT_OK,returnIntent)
             finish()
+
+            val d = MaterialDialog(this, ModalDialog).show {
+                title(R.string.app_name)
+                customView(R.layout.image_viewer)}
+            val view = d.getCustomView()
+            val img = view.findViewById<ImageView>(R.id.imageView)
+            img.setImageBitmap(draw_view.getBitmap())
         }
 
         setUpDrawTools()
