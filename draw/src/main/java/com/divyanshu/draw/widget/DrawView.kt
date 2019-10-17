@@ -8,6 +8,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import java.util.LinkedHashMap
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mPaths = LinkedHashMap<MyPath, PaintOptions>()
@@ -122,6 +124,15 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private fun changePaint(paintOptions: PaintOptions) {
         mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
         mPaint.strokeWidth = paintOptions.strokeWidth
+        setEraser(paintOptions.isEraserOn)
+    }
+
+    private fun setEraser(isEraser: Boolean) {
+        if (isEraser) {
+            mPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        } else {
+            mPaint.xfermode = null
+        }
     }
 
     fun clearCanvas() {
