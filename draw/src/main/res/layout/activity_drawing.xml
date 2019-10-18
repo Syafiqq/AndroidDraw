@@ -30,8 +30,8 @@
 
         <com.divyanshu.draw.widget.DrawView
             android:id="@+id/draw_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="1852dp"
+            android:layout_height="1380dp"
             android:background="@color/color_transparent" />
 
 
