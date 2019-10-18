@@ -12,7 +12,7 @@
         android:id="@+id/zoom_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/color_white"
+        android:background="@color/color_brown"
         android:scrollbars="horizontal|vertical"
         app:hasClickableChildren="true"
         app:horizontalPanEnabled="true"
@@ -27,13 +27,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <com.divyanshu.draw.widget.DrawView
-            android:id="@+id/draw_view"
+        <RelativeLayout
+            android:id="@+id/cnt"
             android:layout_width="1852dp"
             android:layout_height="1380dp"
-            android:background="@color/color_transparent" />
-
+            android:background="@color/color_white">
+            <com.divyanshu.draw.widget.DrawView
+                android:id="@+id/draw_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_transparent" />
+        </RelativeLayout>
 
     </com.otaliastudios.zoom.ZoomLayout>
 
