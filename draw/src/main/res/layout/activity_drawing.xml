@@ -8,11 +8,36 @@
     tools:context=".activity.DrawingActivity"
     android:background="@color/color_white">
 
-    <com.divyanshu.draw.widget.DrawView
-        android:id="@+id/draw_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_transparent" />
+    <com.otaliastudios.zoom.ZoomLayout
+        android:id="@+id/zoom_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/color_white"
+        android:scrollbars="horizontal|vertical"
+        app:hasClickableChildren="true"
+        app:horizontalPanEnabled="true"
+        app:verticalPanEnabled="true"
+        app:overPinchable="false"
+        app:flingEnabled="false"
+        app:oneFingerScrollEnabled="false"
+        app:allowFlingInOverscroll="false"
+        app:zoomEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <com.divyanshu.draw.widget.DrawView
+            android:id="@+id/draw_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/color_transparent" />
+
+
+    </com.otaliastudios.zoom.ZoomLayout>
+
+
 
     <ImageView
         android:id="@+id/image_close_drawing"
