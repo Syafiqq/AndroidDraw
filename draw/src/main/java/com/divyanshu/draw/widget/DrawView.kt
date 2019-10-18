@@ -151,6 +151,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private fun changePaint(paintOptions: PaintOptions) {
         mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
+        mEraser.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
         mPaint.strokeWidth = paintOptions.strokeWidth
         mEraser.strokeWidth = paintOptions.strokeWidth
         //setEraser(paintOptions.isEraserOn)
