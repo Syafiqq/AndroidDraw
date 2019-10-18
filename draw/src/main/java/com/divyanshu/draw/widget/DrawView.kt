@@ -34,17 +34,23 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     init {
         mPaint.apply {
+            alpha = 0xFF
             color = mPaintOptions.color
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
             strokeWidth = mPaintOptions.strokeWidth
+            maskFilter = null
+            xfermode = null
             isAntiAlias = true
         }
         mEraser.apply {
             alpha = 0
             color = Color.TRANSPARENT
             style = Paint.Style.STROKE
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
+            strokeWidth = mPaintOptions.strokeWidth
             maskFilter = null
             xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
             isAntiAlias = true
