@@ -100,6 +100,10 @@ open class ZoomLayout private constructor(
         }
         val child = getChildAt(0)
         engine.setContentSize(child.width.toFloat(), child.height.toFloat())
+
+        child.layoutParams.width = this.width
+        child.layoutParams.height = this.height
+        child.requestLayout()
     }
 
     override fun onAttachedToWindow() {
