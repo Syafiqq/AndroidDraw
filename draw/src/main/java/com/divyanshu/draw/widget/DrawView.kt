@@ -55,6 +55,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
             isAntiAlias = true
         }
+        setLayerType(LAYER_TYPE_HARDWARE, mPaint)
     }
 
     fun undo() {
@@ -129,29 +130,15 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         for ((key, value) in mPaths) {
             changePaint(value)
-            if(value.isEraserOn) {
-                setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
-                canvas.drawPath(key, mEraser)
-            } else {
-                setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
-                canvas.drawPath(key, mPaint)
-            }
-
+            canvas.drawPath(key, if(value.isEraserOn) mEraser else mPaint)
         }
 
         changePaint(mPaintOptions)
-        if(mPaintOptions.isEraserOn) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
-            canvas.drawPath(mPath, mEraser)
-        } else {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
-            canvas.drawPath(mPath, mPaint)
-        }
+        canvas.drawPath(mPath, if(mPaintOptions.isEraserOn) mEraser else mPaint)
     }
 
     private fun changePaint(paintOptions: PaintOptions) {
         mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
-        mEraser.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
         mPaint.strokeWidth = paintOptions.strokeWidth
         mEraser.strokeWidth = paintOptions.strokeWidth
         //setEraser(paintOptions.isEraserOn)
