@@ -18,6 +18,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mUndonePaths = LinkedHashMap<MyPath, PaintOptions>()
 
     private var mPaint = Paint()
+    private var mEraser = Paint()
     private var mPath = MyPath()
     private var mPaintOptions = PaintOptions()
 
@@ -38,6 +39,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
             strokeWidth = mPaintOptions.strokeWidth
+            isAntiAlias = true
+        }
+        mEraser.apply {
+            alpha = 0
+            color = Color.TRANSPARENT
+            style = Paint.Style.STROKE
+            maskFilter = null
+            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
             isAntiAlias = true
         }
     }
@@ -114,17 +123,31 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         for ((key, value) in mPaths) {
             changePaint(value)
-            canvas.drawPath(key, mPaint)
+            if(value.isEraserOn) {
+                setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
+                canvas.drawPath(key, mEraser)
+            } else {
+                setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
+                canvas.drawPath(key, mPaint)
+            }
+
         }
 
         changePaint(mPaintOptions)
-        canvas.drawPath(mPath, mPaint)
+        if(mPaintOptions.isEraserOn) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
+            canvas.drawPath(mPath, mEraser)
+        } else {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, mPaint)
+            canvas.drawPath(mPath, mPaint)
+        }
     }
 
     private fun changePaint(paintOptions: PaintOptions) {
         mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
         mPaint.strokeWidth = paintOptions.strokeWidth
-        setEraser(paintOptions.isEraserOn)
+        mEraser.strokeWidth = paintOptions.strokeWidth
+        //setEraser(paintOptions.isEraserOn)
     }
 
     private fun setEraser(isEraser: Boolean) {
