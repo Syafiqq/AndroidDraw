@@ -2,21 +2,21 @@ package com.divyanshu.draw.widget
 
 import android.content.Context
 import android.graphics.*
-import androidx.annotation.ColorInt
-import androidx.core.graphics.ColorUtils
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import java.util.LinkedHashMap
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    private var mPaths = LinkedHashMap<MyPath, PaintOptions>()
+    private var mPaths = LinkedHashMap<MyImage, PaintOptions>()
 
-    private var mLastPaths = LinkedHashMap<MyPath, PaintOptions>()
-    private var mUndonePaths = LinkedHashMap<MyPath, PaintOptions>()
+    private var mLastPaths = LinkedHashMap<MyImage, PaintOptions>()
+    private var mUndonePaths = LinkedHashMap<MyImage, PaintOptions>()
 
     private var mPaint = Paint()
-    private var mPath = MyPath()
+    private var mPath : MyImage? = null
+    private var selPath : MyImage? = null
     private var mPaintOptions = PaintOptions()
 
     private var mCurX = 0f
@@ -25,6 +25,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mStartY = 0f
     private var mIsSaving = false
     private var mIsStrokeWidthBarEnabled = false
+
+    var imageOperation : ImageOperation? = null
 
     var isEraserOn = false
         private set
@@ -112,11 +114,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         for ((key, value) in mPaths) {
             changePaint(value)
-            canvas.drawPath(key, mPaint)
+            if(key.bitmap != null && key.getRectScaled() != null)
+                canvas.drawBitmap(key.bitmap!!, null, key.getRectScaled()!!, null)
         }
 
         changePaint(mPaintOptions)
-        canvas.drawPath(mPath, mPaint)
+        val path = mPath
+        if(path?.bitmap != null && path.getRectScaled() != null)
+            canvas.drawBitmap(path.bitmap!!, null, path.getRectScaled()!!, null)
     }
 
     private fun changePaint(paintOptions: PaintOptions) {
@@ -132,31 +137,37 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun actionDown(x: Float, y: Float) {
-        mPath.reset()
-        mPath.moveTo(x, y)
-        mCurX = x
-        mCurY = y
+        if(selPath != null)
+        else {
+            imageOperation?.run {
+                mPath = MyImage(this).apply {
+                    placeTo(x, y)
+                }
+                onRequestImage()
+            }
+        }
     }
 
     private fun actionMove(x: Float, y: Float) {
-        mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2)
-        mCurX = x
-        mCurY = y
+        if(selPath == null)
+            return
+        else {
+            selPath?.placeTo(x, y)
+            invalidate()
+        }
     }
 
     private fun actionUp() {
-        mPath.lineTo(mCurX, mCurY)
-
-        // draw a dot on click
-        if (mStartX == mCurX && mStartY == mCurY) {
-            mPath.lineTo(mCurX, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY)
+        val path = mPath
+        if(path != null)
+        {
+            mPaths[path] = mPaintOptions
+            selPath = path
+            mPath = null
+            mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)
+        } else if(selPath != null) {
+            selPath = null
         }
-
-        mPaths[mPath] = mPaintOptions
-        mPath = MyPath()
-        mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -164,17 +175,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         val y = event.y
 
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                mStartX = x
-                mStartY = y
-                actionDown(x, y)
-                mUndonePaths.clear()
-            }
+            MotionEvent.ACTION_DOWN -> actionDown(x, y)
             MotionEvent.ACTION_MOVE -> actionMove(x, y)
             MotionEvent.ACTION_UP -> actionUp()
         }
 
-        invalidate()
         return true
     }
 
@@ -184,4 +189,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         invalidate()
     }
 
+    fun retrieveImageUri(uri: Uri) {
+        mPath?.run {
+            setImage(uri)
+            invalidate()
+        }
+    }
+}
+
+interface ImageOperation : OnRequestStreamImageListener {
+    fun onRequestImage()
 }

@@ -10,16 +10,24 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 interface OnRequestStreamImageListener {
-    fun onRequestStreamImage(uri: Uri): InputStream
+    fun onRequestStreamImage(uri: Uri): InputStream?
 }
 
 interface Operation {
+    fun setImage(uri: Uri)
     fun placeTo(x: Float, y: Float)
     fun scaledUp()
     fun scaledDown()
 }
 
-class MyImage(uri: Uri, private val listener: OnRequestStreamImageListener): Operation {
+class MyImage(private val listener: OnRequestStreamImageListener): Operation {
+    override fun setImage(uri: Uri) {
+        bitmap = decodeSampledBitmapFromUri(uri, 1024, 1024)
+        if(bitmap == null) {
+            throw RuntimeException("cannot retrieve bitmap")
+        }
+    }
+
     override fun placeTo(x: Float, y: Float) {
         this.x = x.roundToInt()
         this.y = y.roundToInt()
@@ -43,19 +51,15 @@ class MyImage(uri: Uri, private val listener: OnRequestStreamImageListener): Ope
     }
 
     private var scale:Int = 0
-    private val scaledMax = 5
+    private val scaledMax = 8
     private val scaleSize = 50
-    private var bitmap: Bitmap? = null
+    var bitmap: Bitmap? = null
     private var rectOri: Rect? = null
     private var rectScaled: Rect? = null
     private var x: Int = 0
     private var y: Int = 0
 
     init {
-        bitmap = decodeSampledBitmapFromUri(uri, 768, 768)
-        if(bitmap == null) {
-            throw RuntimeException("cannot retrieve bitmap")
-        }
         rectOri = Rect(0, 0, 0, 0)
         rectScaled = Rect(0, 0, 0, 0)
     }
@@ -87,13 +91,9 @@ class MyImage(uri: Uri, private val listener: OnRequestStreamImageListener): Ope
         var inSampleSize = 1
 
         if (height > reqHeight || width > reqWidth) {
-
-            val halfHeight = reqHeight
-            val halfWidth = reqWidth
-
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while (halfHeight / inSampleSize > reqHeight && halfWidth / inSampleSize > reqWidth) {
+            while (height / inSampleSize > reqHeight && width / inSampleSize > reqWidth) {
                 inSampleSize *= 2
             }
         }
@@ -104,7 +104,8 @@ class MyImage(uri: Uri, private val listener: OnRequestStreamImageListener): Ope
     private fun decodeSampledBitmapFromUri(uri: Uri, reqWidth: Int, reqHeight: Int): Bitmap? {
 
         // First decode with inJustDecodeBounds=true to check dimensions
-        val stream = listener.onRequestStreamImage(uri)
+        val stream = listener.onRequestStreamImage(uri) ?: return null
+        stream.mark(1)
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeStream(stream, null, options)
@@ -114,8 +115,9 @@ class MyImage(uri: Uri, private val listener: OnRequestStreamImageListener): Ope
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false
-        return BitmapFactory.decodeStream(stream, null, options)?.apply {
-            stream.close()
-        }
+        stream.reset()
+        val bitmap = BitmapFactory.decodeStream(stream, null, options)
+        stream.close()
+        return bitmap
     }
 }

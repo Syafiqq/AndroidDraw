@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
@@ -19,9 +20,13 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.divyanshu.draw.R
 import com.divyanshu.draw.widget.DrawView
+import com.divyanshu.draw.widget.ImageOperation
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import android.content.ContentResolver
+import timber.log.Timber
 
 class DrawingActivity : AppCompatActivity() {
 
@@ -57,6 +62,26 @@ class DrawingActivity : AppCompatActivity() {
         setPaintAlpha()
 
         setPaintWidth()
+
+        draw_view.imageOperation = object : ImageOperation {
+            override fun onRequestImage() {
+                val image = R.drawable.test
+                val uri = Uri.Builder()
+                        .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                        .authority(resources.getResourcePackageName(image))
+                        .appendPath(resources.getResourceTypeName(image))
+                        .appendPath(resources.getResourceEntryName(image))
+                        .build()
+                Timber.d("The uri is ${uri.toString()}")
+                uri?.let(draw_view::retrieveImageUri)
+            }
+
+            override fun onRequestStreamImage(uri: Uri): InputStream? {
+                val stream = contentResolver.openInputStream(uri)
+                Timber.d("Input Stream is ${stream == null}")
+                return stream
+            }
+        }
     }
 
     private fun setUpDrawTools() {
