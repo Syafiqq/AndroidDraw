@@ -6,10 +6,11 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import java.util.LinkedHashMap
+import java.util.*
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    private var mPaths = LinkedHashMap<MyImage, PaintOptions>()
+    private var mPaths = LinkedList<MyImage>()
+    private var mPathsR = LinkedList<MyImage>()
 
     private var mLastPaths = LinkedHashMap<MyImage, PaintOptions>()
     private var mUndonePaths = LinkedHashMap<MyImage, PaintOptions>()
@@ -112,13 +113,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        for ((key, value) in mPaths) {
-            changePaint(value)
+        for (key in mPaths) {
             if(key.bitmap != null && key.getRectScaled() != null)
                 canvas.drawBitmap(key.bitmap!!, null, key.getRectScaled()!!, null)
         }
 
-        changePaint(mPaintOptions)
         val path = mPath
         if(path?.bitmap != null && path.getRectScaled() != null)
             canvas.drawBitmap(path.bitmap!!, null, path.getRectScaled()!!, null)
@@ -137,6 +136,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun actionDown(x: Float, y: Float) {
+        checkSelection(x, y)
         if(selPath != null)
         else {
             imageOperation?.run {
@@ -161,7 +161,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         val path = mPath
         if(path != null)
         {
-            mPaths[path] = mPaintOptions
+            mPaths.addLast(path)
+            mPathsR.addFirst(path)
             selPath = path
             mPath = null
             mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)
@@ -181,6 +182,15 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         }
 
         return true
+    }
+
+    private fun checkSelection(x: Float, y: Float) {
+        for (p in mPathsR) {
+            if(p.isInside(x, y)) {
+                selPath = p
+                return
+            }
+        }
     }
 
     fun toggleEraser() {
