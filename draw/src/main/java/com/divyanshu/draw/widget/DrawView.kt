@@ -41,8 +41,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun undo() {
-        if (mPaths.isEmpty() && mLastPaths.isNotEmpty()) {
-            mPaths = mLastPaths.clone() as LinkedHashMap<MyPath, PaintOptions>
+/*        if (mPaths.isEmpty() && mLastPaths.isNotEmpty()) {
+            mPaths = mLastPaths.clone() as LinkedHashMap<MyImage, PaintOptions>
             mLastPaths.clear()
             invalidate()
             return
@@ -57,40 +57,40 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         if (lastPath != null && lastKey != null) {
             mUndonePaths[lastKey] = lastPath
         }
-        invalidate()
+        invalidate()*/
     }
 
     fun redo() {
-        if (mUndonePaths.keys.isEmpty()) {
+/*        if (mUndonePaths.keys.isEmpty()) {
             return
         }
 
         val lastKey = mUndonePaths.keys.last()
         addPath(lastKey, mUndonePaths.values.last())
         mUndonePaths.remove(lastKey)
-        invalidate()
+        invalidate()*/
     }
 
     fun setColor(newColor: Int) {
-        @ColorInt
+/*        @ColorInt
         val alphaColor = ColorUtils.setAlphaComponent(newColor, mPaintOptions.alpha)
         mPaintOptions.color = alphaColor
         if (mIsStrokeWidthBarEnabled) {
             invalidate()
-        }
+        }*/
     }
 
     fun setAlpha(newAlpha: Int) {
-        val alpha = (newAlpha*255)/100
+/*        val alpha = (newAlpha*255)/100
         mPaintOptions.alpha = alpha
-        setColor(mPaintOptions.color)
+        setColor(mPaintOptions.color)*/
     }
 
     fun setStrokeWidth(newStrokeWidth: Float) {
-        mPaintOptions.strokeWidth = newStrokeWidth
+/*        mPaintOptions.strokeWidth = newStrokeWidth
         if (mIsStrokeWidthBarEnabled) {
             invalidate()
-        }
+        }*/
     }
 
     fun getBitmap(): Bitmap {
@@ -103,8 +103,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         return bitmap
     }
 
-    fun addPath(path: MyPath, options: PaintOptions) {
-        mPaths[path] = options
+    fun addPath(path: MyImage, options: PaintOptions) {
+        /*mPaths[path] = options*/
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -120,15 +120,15 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun changePaint(paintOptions: PaintOptions) {
-        mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
-        mPaint.strokeWidth = paintOptions.strokeWidth
+/*        mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
+        mPaint.strokeWidth = paintOptions.strokeWidth*/
     }
 
     fun clearCanvas() {
-        mLastPaths = mPaths.clone() as LinkedHashMap<MyPath, PaintOptions>
+/*        mLastPaths = mPaths.clone() as LinkedHashMap<MyImage, PaintOptions>
         mPath.reset()
         mPaths.clear()
-        invalidate()
+        invalidate()*/
     }
 
     private fun actionDown(x: Float, y: Float) {
