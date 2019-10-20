@@ -5,6 +5,7 @@ import android.graphics.*
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,6 +41,22 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mIsStrokeWidthBarEnabled = false
 
     var imageOperation : ImageOperation? = null
+
+    private val scaleListener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            Timber.d("onScale")
+            if(selPath != null) {
+                if(detector.scaleFactor < 1.0)
+                    selPath?.scaledDown()
+                else
+                    selPath?.scaledUp()
+                invalidate()
+                return true
+            }
+            return false
+        }
+    }
+    private val mScaleDetector = ScaleGestureDetector(context, scaleListener)
 
     var isEraserOn = false
         private set
@@ -147,40 +164,45 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         invalidate()*/
     }
 
-    private fun actionDown(x: Float, y: Float) {
+    private fun actionDown(event: MotionEvent, x: Float, y: Float) {
         checkSelection(x, y)
         buildObservable()
     }
 
-    private fun actionMove(x: Float, y: Float) {
+    private fun actionMove(event: MotionEvent, x: Float, y: Float) {
         if(selPath == null)
             return
         else {
-            selPath?.placeTo(x, y)
-            invalidate()
+            if(event.pointerCount <= 1) {
+                selPath?.placeTo(x, y)
+                invalidate()
+            }
         }
     }
 
-    private fun actionUp() {
+    private fun actionUp(event: MotionEvent) {
         if(selPath != null) {
             selPath = null
         }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val x = event.x
-        val y = event.y
-        mCurX = x
-        mCurY = y
+        if(mScaleDetector.onTouchEvent(event)) {
+            val x = event.x
+            val y = event.y
+            mCurX = x
+            mCurY = y
 
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> actionDown(x, y)
-            MotionEvent.ACTION_MOVE -> actionMove(x, y)
-            MotionEvent.ACTION_UP -> actionUp()
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> actionDown(event, x, y)
+                MotionEvent.ACTION_MOVE -> actionMove(event, x, y)
+                MotionEvent.ACTION_UP -> actionUp(event)
+            }
+            subject.onNext(event.action)
+
+            return true
         }
-        subject.onNext(event.action)
-
-        return true
+        return false
     }
 
     private fun checkSelection(x: Float, y: Float) {
