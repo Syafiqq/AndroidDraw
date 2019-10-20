@@ -186,9 +186,9 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     override fun createDrawingObject() {
         mPath = when(drawingMode) {
             DrawingMode.LINE -> PathMode(this).apply {
-                alpha = alpha
-                color = color
-                strokeWidth = strokeWidth
+                alpha = this@DrawView.alpha
+                color = this@DrawView.color
+                strokeWidth = this@DrawView.strokeWidth
             }
             else -> null
         }

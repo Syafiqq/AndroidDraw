@@ -7,6 +7,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.ImageViewCompat
 import android.util.Log
@@ -57,6 +58,12 @@ class DrawingActivity : AppCompatActivity() {
         setPaintAlpha()
 
         setPaintWidth()
+
+        Handler().postDelayed({
+            image_color_black.callOnClick()
+            draw_view.alpha = 100
+            draw_view.strokeWidth = 8F
+        }, 250)
     }
 
     private fun setUpDrawTools() {
