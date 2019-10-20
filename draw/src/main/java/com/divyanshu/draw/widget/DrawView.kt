@@ -13,6 +13,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -205,9 +206,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         return false
     }
 
-    private fun checkSelection(x: Float, y: Float) {
+    private fun checkSelection(x: Float, y: Float, pointerId: Int) {
+        Timber.d("Check selection of ${mPathsR.size}")
         for (p in mPathsR) {
             if(p.isInside(x, y)) {
+                Timber.d("Is Inside")
                 selPath = p
                 p.setTouchDiffer(x, y)
                 p.setPointer(pointerId)

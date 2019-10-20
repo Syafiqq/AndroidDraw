@@ -38,6 +38,7 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
 
     override fun isInside(x: Float, y: Float): Boolean {
         val r = rectScaled ?: return false
+        Timber.d("[${r.left} ${r.top} ${r.right} ${r.bottom}] [$x $y]")
 
         return x > r.left && x < r.right && y > r.top && y < r.bottom
     }
