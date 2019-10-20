@@ -66,8 +66,8 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
     }
 
     private var scale:Int = 0
-    private val scaledMax = 8
-    private val scaleSize = 50
+    private val scaledMax = 10
+    private val scaleSize = 64
     var bitmap: Bitmap? = null
     private var rectScaled: Rect? = null
     private var x: Int = 0
@@ -80,14 +80,17 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
     }
 
     fun getRectScaled() : Rect? {
-        val scaled = scaleSize * scale
+        val w = bitmap?.width ?: 0
+        val h = bitmap?.height ?: 0
+        val scaledX = scaleSize * scale
+        val scaledY = (scaleSize * h/w) * scale
         val x = this.x - dX
         val y = this.y - dY
         return rectScaled?.apply {
             left = x
             top = y
-            right = x + ((bitmap?.width ?: 0) + scaled)
-            bottom = y + ((bitmap?.height ?: 0) + scaled)
+            right = x + w + scaledX
+            bottom = y + h + scaledY
         }
     }
 
