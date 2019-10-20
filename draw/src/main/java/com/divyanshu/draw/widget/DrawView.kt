@@ -152,21 +152,20 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        /*val x = event.x
-        val y = event.y
+        if(mPath == null)
+            createDrawingObject()
 
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                mStartX = x
-                mStartY = y
-                actionDown(x, y)
-                mUndonePaths.clear()
+        if(mPath?.onTouchEvent(event) == true) {
+            val x = event.x
+            val y = event.y
+
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> actionDown(x, y)
+                MotionEvent.ACTION_MOVE -> actionMove(x, y)
+                MotionEvent.ACTION_UP -> actionUp(x, y)
             }
-            MotionEvent.ACTION_MOVE -> actionMove(x, y)
-            MotionEvent.ACTION_UP -> actionUp()
         }
 
-        invalidate()*/
         return true
     }
 
