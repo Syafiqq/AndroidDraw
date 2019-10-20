@@ -6,7 +6,15 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import java.util.*
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mPaths = LinkedList<MyImage>()
@@ -19,6 +27,10 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mPath : MyImage? = null
     private var selPath : MyImage? = null
     private var mPaintOptions = PaintOptions()
+
+    private val disposable= CompositeDisposable()
+    private val subject= PublishSubject.create<Int>()
+    private var gate = AtomicBoolean(true)
 
     private var mCurX = 0f
     private var mCurY = 0f
@@ -180,6 +192,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             MotionEvent.ACTION_MOVE -> actionMove(x, y)
             MotionEvent.ACTION_UP -> actionUp()
         }
+        subject.onNext(event.action)
 
         return true
     }
@@ -204,6 +217,32 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             setImage(uri)
             invalidate()
         }
+    }
+
+    fun buildObservable() {
+        if(gate.get()) {
+            gate.set(false)
+            subject
+                    .distinctUntilChanged()
+                    .takeUntil(Observable.timer(300L, TimeUnit.MILLISECONDS))
+                    .defaultIfEmpty(MotionEvent.ACTION_MOVE)
+                    .toList()
+                    .observeOn(Schedulers.computation())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+                            gate.set(true)
+                            Timber.d("Here subscribe ${it.joinToString()}")
+                        },{}
+                    )
+                    .addTo(disposable)
+        }
+    }
+
+    fun onDestroy() {
+        disposable.dispose()
+        mPaths.forEach(MyImage::onDestroy)
+        mPath?.onDestroy()
     }
 }
 

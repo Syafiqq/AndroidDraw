@@ -256,6 +256,11 @@ class DrawingActivity : AppCompatActivity() {
         })
     }
 
+    override fun onDestroy() {
+        draw_view.onDestroy()
+        super.onDestroy()
+    }
+
     private val Int.toPx: Float
         get() = (this * Resources.getSystem().displayMetrics.density)
 }

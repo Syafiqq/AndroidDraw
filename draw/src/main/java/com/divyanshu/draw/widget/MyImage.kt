@@ -115,4 +115,8 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
         stream.close()
         return bitmap
     }
+
+    fun onDestroy() {
+        bitmap?.recycle()
+    }
 }
