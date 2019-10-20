@@ -5,4 +5,5 @@ import android.graphics.Paint
 
 interface DrawingContract {
     fun onDraw(canvas: Canvas, paint: Paint)
+    val canvas: CanvasContract
 }
