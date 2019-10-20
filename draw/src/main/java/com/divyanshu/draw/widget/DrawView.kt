@@ -119,16 +119,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun actionDown(x: Float, y: Float) {
-        /*mPath.reset()
-        mPath.moveTo(x, y)
-        mCurX = x
-        mCurY = y*/
+        mPath?.onFingerDown(x, y)
     }
 
     private fun actionMove(x: Float, y: Float) {
-        /*mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2)
-        mCurX = x
-        mCurY = y*/
+        mPath?.onFingerMove(x, y)
     }
 
     private fun actionUp() {
