@@ -4,9 +4,10 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.view.MotionEvent
+import com.divyanshu.draw.widget.contract.CanvasContract
 import com.divyanshu.draw.widget.contract.DrawingHolderContract
 
-class PathMode : Path(), DrawingHolderContract {
+class PathMode(override val canvas: CanvasContract) : Path(), DrawingHolderContract {
     private var _color = 0
     private var _strokeWidth = 0F
     private var _alpha = 0
@@ -47,11 +48,13 @@ class PathMode : Path(), DrawingHolderContract {
         moveTo(x, y)
         initialPos(x, y)
         currentPos(x, y)
+        canvas.requestInvalidate()
     }
 
     override fun onFingerMove(x: Float, y: Float) {
         quadTo(curX, curY, (x + curX) / 2, (y + curY) / 2)
         currentPos(x, y)
+        canvas.requestInvalidate()
     }
 
     override fun onFingerUp(x: Float, y: Float) {
@@ -62,6 +65,8 @@ class PathMode : Path(), DrawingHolderContract {
             lineTo(curX + 1, curY + 2)
             lineTo(curX + 1, curY)
         }
+        canvas.requestInvalidate()
+        canvas.attachToCanvas()
     }
 
     private fun currentPos(x: Float, y: Float) {
