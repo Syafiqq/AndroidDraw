@@ -7,11 +7,44 @@ import androidx.core.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.divyanshu.draw.widget.contract.CanvasContract
-import com.divyanshu.draw.widget.contract.DrawingHolderContract
+import com.divyanshu.draw.widget.contract.*
+import com.divyanshu.draw.widget.mode.PathMode
 import java.util.*
 
-class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), CanvasContract {
+class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), CanvasContract, DrawingModeContract, PaintContract {
+    private var _drawingMode: DrawingMode = DrawingMode.LINE
+    private var _color = 0
+    private var _strokeWidth = 0F
+    private var _alpha = 0
+
+    override var drawingMode: DrawingMode
+        get() = _drawingMode
+        set(value) {
+            _drawingMode = value
+            destroyDrawingObject()
+        }
+
+    override var color: Int
+        get() = _color
+        set(value) {
+            @ColorInt
+            val alphaColor = ColorUtils.setAlphaComponent(value, alpha)
+            _color = alphaColor
+            mPath?.color = alphaColor
+        }
+    override var strokeWidth: Float
+        get() = _strokeWidth
+        set(value) {
+            _strokeWidth = value
+            mPath?.strokeWidth = value
+        }
+    override var alpha: Int
+        get() = _alpha
+        set(value) {
+            _alpha = (value*255)/100
+            color = color
+        }
+
     private var mPaths = LinkedList<DrawingHolderContract>()
     private var mPathsR = LinkedList<DrawingHolderContract>()
 
@@ -66,22 +99,9 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         invalidate()*/
     }
 
-    fun setColor(newColor: Int, alpha: Int = 255) {
-        @ColorInt
-        val alphaColor = ColorUtils.setAlphaComponent(newColor, alpha)
-        mPath?.color = alphaColor
-    }
+/*    fun setColor(newColor: Int, alpha: Int = 255) {
 
-    fun setAlpha(newAlpha: Int) {
-        val alpha = (newAlpha*255)/100
-        mPath?.let {
-            setColor(it.color, alpha)
-        }
-    }
-
-    fun setStrokeWidth(newStrokeWidth: Float) {
-        mPath?.strokeWidth = newStrokeWidth
-    }
+    }*/
 
     fun getBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -150,22 +170,33 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         return true
     }
 
-    fun resetDraw() {
-        mPath = null
-    }
-
     override fun attachToCanvas() {
         val path = mPath
         if(path != null)
         {
             mPaths.addLast(path)
             mPathsR.addFirst(path)
-            resetDraw()
+            destroyDrawingObject()
         }
     }
 
     override fun requestInvalidate() {
         invalidate()
+    }
+
+    override fun createDrawingObject() {
+        mPath = when(drawingMode) {
+            DrawingMode.LINE -> PathMode(this).apply {
+                alpha = alpha
+                color = color
+                strokeWidth = strokeWidth
+            }
+            else -> null
+        }
+    }
+
+    override fun destroyDrawingObject() {
+        mPath = null
     }
 
 
