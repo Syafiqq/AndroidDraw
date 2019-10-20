@@ -223,18 +223,16 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         if(gate.get()) {
             gate.set(false)
             subject
-                    .distinctUntilChanged()
-                    .takeUntil(Observable.timer(300L, TimeUnit.MILLISECONDS))
+                    .distinct()
+                    .takeUntil(Observable.timer(150L, TimeUnit.MILLISECONDS))
+                    .lastElement()
                     .defaultIfEmpty(MotionEvent.ACTION_MOVE)
-                    .toList()
                     .observeOn(Schedulers.computation())
                     .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            gate.set(true)
-                            Timber.d("Here subscribe ${it.joinToString()}")
-                        },{}
-                    )
+                    .subscribe{
+                        gate.set(true)
+                        Timber.d("Here subscribe $it")
+                    }
                     .addTo(disposable)
         }
     }
