@@ -97,15 +97,13 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     override fun onDraw(canvas: Canvas) {
-        /*super.onDraw(canvas)
+        super.onDraw(canvas)
 
-        for ((key, value) in mPaths) {
-            changePaint(value)
-            canvas.drawPath(key, mPaint)
+        mPaths.forEach {
+            it.onDraw(canvas, mPaint)
         }
 
-        changePaint(mPaintOptions)
-        canvas.drawPath(mPath, mPaint)*/
+        mPath?.onDraw(canvas, mPaint)
     }
 
     private fun changePaint(paintOptions: PaintOptions) {
