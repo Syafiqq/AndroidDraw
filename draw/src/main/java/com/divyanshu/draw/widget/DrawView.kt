@@ -149,15 +149,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private fun actionDown(x: Float, y: Float) {
         checkSelection(x, y)
-        if(selPath != null)
-        else {
-            imageOperation?.run {
-                mPath = MyImage(this).apply {
-                    placeTo(x, y)
-                }
-                onRequestImage()
-            }
-        }
+        buildObservable()
     }
 
     private fun actionMove(x: Float, y: Float) {
@@ -170,15 +162,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun actionUp() {
-        val path = mPath
-        if(path != null)
-        {
-            mPaths.addLast(path)
-            mPathsR.addFirst(path)
-            selPath = path
-            mPath = null
-            mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)
-        } else if(selPath != null) {
+        if(selPath != null) {
             selPath = null
         }
     }
@@ -186,6 +170,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
+        mCurX = x
+        mCurY = y
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> actionDown(x, y)
@@ -217,23 +203,43 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             setImage(uri)
             invalidate()
         }
+
+        val path = mPath
+        if(path != null)
+        {
+            mPaths.addLast(path)
+            mPathsR.addFirst(path)
+            mPath = null
+            mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)
+        }
     }
 
-    fun buildObservable() {
+    private fun buildObservable() {
         if(gate.get()) {
             gate.set(false)
             subject
                     .distinct()
-                    .takeUntil(Observable.timer(150L, TimeUnit.MILLISECONDS))
+                    .takeUntil(Observable.timer(350L, TimeUnit.MILLISECONDS))
                     .lastElement()
                     .defaultIfEmpty(MotionEvent.ACTION_MOVE)
                     .observeOn(Schedulers.computation())
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .subscribe{
                         gate.set(true)
-                        Timber.d("Here subscribe $it")
+                        createObjectIfSufficient(it)
                     }
                     .addTo(disposable)
+        }
+    }
+
+    private fun createObjectIfSufficient(actionEvent: Int) {
+        if(actionEvent == MotionEvent.ACTION_UP || (actionEvent == MotionEvent.ACTION_MOVE && selPath == null)) {
+            imageOperation?.run {
+                mPath = MyImage(this).apply {
+                    placeTo(mCurX, mCurY)
+                }
+                onRequestImage()
+            }
         }
     }
 
