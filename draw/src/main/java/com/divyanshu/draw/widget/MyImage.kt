@@ -17,13 +17,19 @@ interface OnRequestStreamImageListener {
 interface Operation {
     fun setImage(uri: Uri)
     fun placeTo(x: Float, y: Float)
+    fun placeTo(x: Float, y: Float, pointerId: Int)
     fun setTouchDiffer(x: Float, y: Float)
     fun isInside(x: Float, y: Float) : Boolean
     fun scaledUp()
     fun scaledDown()
+    fun setPointer(pointerId: Int)
 }
 
 class MyImage(private val listener: OnRequestStreamImageListener): Operation {
+    override fun setPointer(pointerId: Int) {
+        ptx = pointerId
+    }
+
     override fun setTouchDiffer(x: Float, y: Float) {
         val r = rectScaled ?: return
         dX = (x - r.left).roundToInt()
@@ -46,6 +52,11 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
     override fun placeTo(x: Float, y: Float) {
         this.x = x.roundToInt()
         this.y = y.roundToInt()
+    }
+
+    override fun placeTo(x: Float, y: Float, pointerId: Int) {
+        if(ptx != pointerId) return
+        placeTo(x, y)
     }
 
     override fun scaledUp() {
@@ -74,6 +85,7 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
     private var y: Int = 0
     private var dX: Int = 0
     private var dY: Int = 0
+    private var ptx = -1
 
     init {
         rectScaled = Rect(0, 0, 0, 0)

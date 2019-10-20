@@ -165,7 +165,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun actionDown(event: MotionEvent, x: Float, y: Float) {
-        checkSelection(x, y)
+        checkSelection(x, y, event.getPointerId(0))
         buildObservable()
     }
 
@@ -174,7 +174,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             return
         else {
             if(event.pointerCount <= 1) {
-                selPath?.placeTo(x, y)
+                selPath?.placeTo(x, y, event.getPointerId(0))
                 invalidate()
             }
         }
@@ -210,6 +210,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             if(p.isInside(x, y)) {
                 selPath = p
                 p.setTouchDiffer(x, y)
+                p.setPointer(pointerId)
                 return
             }
         }
