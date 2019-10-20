@@ -18,26 +18,18 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mUndonePaths = LinkedList<DrawingHolderContract>()
 
     private var mPaint = Paint()
-    private var mPath = MyPath()
-    private var mPaintOptions = PaintOptions()
+    private var mPath :DrawingHolderContract? = null
 
-    private var mCurX = 0f
-    private var mCurY = 0f
-    private var mStartX = 0f
-    private var mStartY = 0f
     private var mIsSaving = false
-    private var mIsStrokeWidthBarEnabled = false
 
     var isEraserOn = false
         private set
 
     init {
         mPaint.apply {
-            color = mPaintOptions.color
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
-            strokeWidth = mPaintOptions.strokeWidth
             isAntiAlias = true
         }
     }
@@ -73,26 +65,21 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         invalidate()*/
     }
 
-    fun setColor(newColor: Int) {
+    fun setColor(newColor: Int, alpha: Int = 255) {
         @ColorInt
-        val alphaColor = ColorUtils.setAlphaComponent(newColor, mPaintOptions.alpha)
-        mPaintOptions.color = alphaColor
-        if (mIsStrokeWidthBarEnabled) {
-            invalidate()
-        }
+        val alphaColor = ColorUtils.setAlphaComponent(newColor, alpha)
+        mPath?.color = alphaColor
     }
 
     fun setAlpha(newAlpha: Int) {
         val alpha = (newAlpha*255)/100
-        mPaintOptions.alpha = alpha
-        setColor(mPaintOptions.color)
+        mPath?.let {
+            setColor(it.color, alpha)
+        }
     }
 
     fun setStrokeWidth(newStrokeWidth: Float) {
-        mPaintOptions.strokeWidth = newStrokeWidth
-        if (mIsStrokeWidthBarEnabled) {
-            invalidate()
-        }
+        mPath?.strokeWidth = newStrokeWidth
     }
 
     fun getBitmap(): Bitmap {
