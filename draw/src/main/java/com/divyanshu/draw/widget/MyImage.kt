@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
+import timber.log.Timber
 import java.io.InputStream
 import kotlin.math.abs
 import kotlin.math.min
@@ -16,12 +17,19 @@ interface OnRequestStreamImageListener {
 interface Operation {
     fun setImage(uri: Uri)
     fun placeTo(x: Float, y: Float)
+    fun setTouchDiffer(x: Float, y: Float)
     fun isInside(x: Float, y: Float) : Boolean
     fun scaledUp()
     fun scaledDown()
 }
 
 class MyImage(private val listener: OnRequestStreamImageListener): Operation {
+    override fun setTouchDiffer(x: Float, y: Float) {
+        val r = rectScaled ?: return
+        dX = (x - r.left).roundToInt()
+        dY = (y - r.top).roundToInt()
+    }
+
     override fun isInside(x: Float, y: Float): Boolean {
         val r = rectScaled ?: return false
 
@@ -64,6 +72,8 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
     private var rectScaled: Rect? = null
     private var x: Int = 0
     private var y: Int = 0
+    private var dX: Int = 0
+    private var dY: Int = 0
 
     init {
         rectScaled = Rect(0, 0, 0, 0)
@@ -71,6 +81,8 @@ class MyImage(private val listener: OnRequestStreamImageListener): Operation {
 
     fun getRectScaled() : Rect? {
         val scaled = scaleSize * scale
+        val x = this.x - dX
+        val y = this.y - dY
         return rectScaled?.apply {
             left = x
             top = y

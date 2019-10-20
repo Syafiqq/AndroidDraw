@@ -187,6 +187,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         for (p in mPathsR) {
             if(p.isInside(x, y)) {
                 selPath = p
+                p.setTouchDiffer(x, y)
                 return
             }
         }
@@ -218,22 +219,21 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         if(gate.get()) {
             gate.set(false)
             subject
-                    .distinct()
-                    .takeUntil(Observable.timer(350L, TimeUnit.MILLISECONDS))
-                    .lastElement()
+                    .takeUntil(Observable.timer(150L, TimeUnit.MILLISECONDS))
                     .defaultIfEmpty(MotionEvent.ACTION_MOVE)
+                    .toList()
                     .observeOn(Schedulers.computation())
                     .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe{
+                    .subscribe({
                         gate.set(true)
                         createObjectIfSufficient(it)
-                    }
+                    },{})
                     .addTo(disposable)
         }
     }
 
-    private fun createObjectIfSufficient(actionEvent: Int) {
-        if(actionEvent == MotionEvent.ACTION_UP || (actionEvent == MotionEvent.ACTION_MOVE && selPath == null)) {
+    private fun createObjectIfSufficient(seq: List<Int>) {
+        if((seq.last() == MotionEvent.ACTION_UP && seq.size < 3) || (seq.last() == MotionEvent.ACTION_MOVE && selPath == null)) {
             imageOperation?.run {
                 mPath = MyImage(this).apply {
                     placeTo(mCurX, mCurY)
