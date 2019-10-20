@@ -7,10 +7,11 @@ import androidx.core.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.divyanshu.draw.widget.contract.CanvasContract
 import com.divyanshu.draw.widget.contract.DrawingHolderContract
 import java.util.*
 
-class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), CanvasContract {
     private var mPaths = LinkedList<DrawingHolderContract>()
     private var mPathsR = LinkedList<DrawingHolderContract>()
 
@@ -126,19 +127,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         mPath?.onFingerMove(x, y)
     }
 
-    private fun actionUp() {
-        /*mPath.lineTo(mCurX, mCurY)
-
-        // draw a dot on click
-        if (mStartX == mCurX && mStartY == mCurY) {
-            mPath.lineTo(mCurX, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY)
-        }
-
-        mPaths[mPath] = mPaintOptions
-        mPath = MyPath()
-        mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)*/
+    private fun actionUp(x: Float, y: Float) {
+        mPath?.onFingerUp(x, y)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -159,6 +149,25 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         invalidate()*/
         return true
     }
+
+    fun resetDraw() {
+        mPath = null
+    }
+
+    override fun attachToCanvas() {
+        val path = mPath
+        if(path != null)
+        {
+            mPaths.addLast(path)
+            mPathsR.addFirst(path)
+            resetDraw()
+        }
+    }
+
+    override fun requestInvalidate() {
+        invalidate()
+    }
+
 
     fun toggleEraser() {
         /*isEraserOn = !isEraserOn
