@@ -7,13 +7,15 @@ import androidx.core.graphics.ColorUtils
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import java.util.LinkedHashMap
+import com.divyanshu.draw.widget.contract.DrawingHolderContract
+import java.util.*
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    private var mPaths = LinkedHashMap<MyPath, PaintOptions>()
+    private var mPaths = LinkedList<DrawingHolderContract>()
+    private var mPathsR = LinkedList<DrawingHolderContract>()
 
-    private var mLastPaths = LinkedHashMap<MyPath, PaintOptions>()
-    private var mUndonePaths = LinkedHashMap<MyPath, PaintOptions>()
+    private var mLastPaths = LinkedList<DrawingHolderContract>()
+    private var mUndonePaths = LinkedList<DrawingHolderContract>()
 
     private var mPaint = Paint()
     private var mPath = MyPath()
@@ -41,8 +43,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun undo() {
-        if (mPaths.isEmpty() && mLastPaths.isNotEmpty()) {
-            mPaths = mLastPaths.clone() as LinkedHashMap<MyPath, PaintOptions>
+        /*if (mPaths.isEmpty() && mLastPaths.isNotEmpty()) {
+            mPaths = mLastPaths.clone() as LinkedList<DrawingHolderContract>
             mLastPaths.clear()
             invalidate()
             return
@@ -57,18 +59,18 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         if (lastPath != null && lastKey != null) {
             mUndonePaths[lastKey] = lastPath
         }
-        invalidate()
+        invalidate()*/
     }
 
     fun redo() {
-        if (mUndonePaths.keys.isEmpty()) {
+        /*if (mUndonePaths.keys.isEmpty()) {
             return
         }
 
         val lastKey = mUndonePaths.keys.last()
         addPath(lastKey, mUndonePaths.values.last())
         mUndonePaths.remove(lastKey)
-        invalidate()
+        invalidate()*/
     }
 
     fun setColor(newColor: Int) {
@@ -104,11 +106,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun addPath(path: MyPath, options: PaintOptions) {
-        mPaths[path] = options
+        //mPaths[path] = options
     }
 
     override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+        /*super.onDraw(canvas)
 
         for ((key, value) in mPaths) {
             changePaint(value)
@@ -116,36 +118,36 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         }
 
         changePaint(mPaintOptions)
-        canvas.drawPath(mPath, mPaint)
+        canvas.drawPath(mPath, mPaint)*/
     }
 
     private fun changePaint(paintOptions: PaintOptions) {
-        mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
-        mPaint.strokeWidth = paintOptions.strokeWidth
+        /*mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
+        mPaint.strokeWidth = paintOptions.strokeWidth*/
     }
 
     fun clearCanvas() {
-        mLastPaths = mPaths.clone() as LinkedHashMap<MyPath, PaintOptions>
+        /*mLastPaths = mPaths.clone() as LinkedList<DrawingHolderContract>
         mPath.reset()
         mPaths.clear()
-        invalidate()
+        invalidate()*/
     }
 
     private fun actionDown(x: Float, y: Float) {
-        mPath.reset()
+        /*mPath.reset()
         mPath.moveTo(x, y)
         mCurX = x
-        mCurY = y
+        mCurY = y*/
     }
 
     private fun actionMove(x: Float, y: Float) {
-        mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2)
+        /*mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2)
         mCurX = x
-        mCurY = y
+        mCurY = y*/
     }
 
     private fun actionUp() {
-        mPath.lineTo(mCurX, mCurY)
+        /*mPath.lineTo(mCurX, mCurY)
 
         // draw a dot on click
         if (mStartX == mCurX && mStartY == mCurY) {
@@ -156,11 +158,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         mPaths[mPath] = mPaintOptions
         mPath = MyPath()
-        mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)
+        mPaintOptions = PaintOptions(mPaintOptions.color, mPaintOptions.strokeWidth, mPaintOptions.alpha, mPaintOptions.isEraserOn)*/
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val x = event.x
+        /*val x = event.x
         val y = event.y
 
         when (event.action) {
@@ -174,14 +176,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             MotionEvent.ACTION_UP -> actionUp()
         }
 
-        invalidate()
+        invalidate()*/
         return true
     }
 
     fun toggleEraser() {
-        isEraserOn = !isEraserOn
+        /*isEraserOn = !isEraserOn
         mPaintOptions.isEraserOn = isEraserOn
-        invalidate()
+        invalidate()*/
     }
 
 }
