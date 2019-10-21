@@ -133,10 +133,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     fun clearCanvas() {
-        /*mLastPaths = mPaths.clone() as LinkedList<DrawingHolderContract>
-        mPath.reset()
+        mLastPaths.clear()
+        mLastPaths.addAll(mPaths)
         mPaths.clear()
-        invalidate()*/
+        destroyDrawingObject()
+        invalidate()
     }
 
     private fun actionDown(x: Float, y: Float) {
