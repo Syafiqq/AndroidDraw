@@ -19,6 +19,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        performClick()
         return true
+    }
+
+    override fun performClick(): Boolean {
+        return super.performClick()
     }
 }
