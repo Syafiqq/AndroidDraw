@@ -69,8 +69,9 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     fun undo() {
-        /*if (mPaths.isEmpty() && mLastPaths.isNotEmpty()) {
-            mPaths = mLastPaths.clone() as LinkedList<DrawingHolderContract>
+        if (mPaths.isEmpty() && mLastPaths.isNotEmpty()) {
+            mPaths.addAll(mLastPaths)
+            mPathsR.addAllFirst(mLastPaths)
             mLastPaths.clear()
             invalidate()
             return
@@ -78,14 +79,12 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         if (mPaths.isEmpty()) {
             return
         }
-        val lastPath = mPaths.values.lastOrNull()
-        val lastKey = mPaths.keys.lastOrNull()
 
-        mPaths.remove(lastKey)
-        if (lastPath != null && lastKey != null) {
-            mUndonePaths[lastKey] = lastPath
-        }
-        invalidate()*/
+        val last = mPaths.removeLast()
+        mPathsR.removeFirst()
+
+        mUndonePaths.addLast(last)
+        invalidate()
     }
 
     fun redo() {
@@ -194,4 +193,9 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     override fun destroyDrawingObject() {
         mPath = null
     }
+}
+
+fun <T> LinkedList<T>.addAllFirst(c: Collection<T>): Boolean{
+    c.forEach(this::addFirst)
+    return true
 }
