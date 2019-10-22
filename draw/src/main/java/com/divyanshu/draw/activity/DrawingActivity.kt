@@ -69,7 +69,6 @@ class DrawingActivity : AppCompatActivity() {
     private fun setUpDrawTools() {
         circle_view_opacity.setCircleRadius(100f)
         image_draw_eraser.setOnClickListener {
-            draw_view.toggleEraser()
             image_draw_eraser.isSelected = draw_view.isEraserOn
             toggleDrawTools(draw_tools,false)
         }
