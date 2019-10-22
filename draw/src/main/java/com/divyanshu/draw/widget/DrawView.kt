@@ -98,10 +98,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         invalidate()
     }
 
-/*    fun setColor(newColor: Int, alpha: Int = 255) {
-
-    }*/
-
     fun getBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -110,10 +106,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         draw(canvas)
         mIsSaving = false
         return bitmap
-    }
-
-    fun addPath(path: MyPath, options: PaintOptions) {
-        //mPaths[path] = options
     }
 
     override fun onDraw(canvas: Canvas) {
