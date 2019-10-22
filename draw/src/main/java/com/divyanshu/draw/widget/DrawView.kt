@@ -10,6 +10,7 @@ import android.view.View
 import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.PathMode
 import java.util.*
+import kotlin.collections.ArrayList
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), CanvasContract, DrawingModeContract, PaintContract {
     private var _drawingMode: DrawingMode = DrawingMode.LINE
@@ -50,6 +51,9 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
 
     private var mLastPaths = LinkedList<DrawingHolderContract>()
     private var mUndonePaths = LinkedList<DrawingHolderContract>()
+
+    private var stepState = ArrayList<DrawingStepState>()
+    private var stepStateBackup = ArrayList<DrawingStepState>()
 
     private var mPaint = Paint()
     private var mPath :DrawingHolderContract? = null
