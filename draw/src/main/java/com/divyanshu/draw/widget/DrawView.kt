@@ -52,8 +52,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     private var mLastPaths = LinkedList<DrawingHolderContract>()
     private var mUndonePaths = LinkedList<DrawingHolderContract>()
 
-    private var stepState = ArrayList<DrawingStepState>()
-    private var stepStateBackup = ArrayList<DrawingStepState>()
+    private var stepState = LinkedList<DrawingStepState>()
+    private var lastState = LinkedList<DrawingStepState>()
 
     private var mPaint = Paint()
     private var mPath :DrawingHolderContract? = null
@@ -123,6 +123,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     fun clearCanvas() {
+        stepState.addLast(DrawingStepState.CLEAR)
+
         mLastPaths.clear()
         mLastPaths.addAll(mPaths)
         mPaths.clear()
@@ -165,6 +167,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         val path = mPath
         if(path != null)
         {
+            stepState.addLast(DrawingStepState.DRAW)
+
             mPaths.addLast(path)
             mPathsR.addFirst(path)
             destroyDrawingObject()
