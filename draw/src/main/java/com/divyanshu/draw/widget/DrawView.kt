@@ -88,14 +88,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     fun redo() {
-        /*if (mUndonePaths.keys.isEmpty()) {
+        if (mUndonePaths.isEmpty()) {
             return
         }
 
-        val lastKey = mUndonePaths.keys.last()
-        addPath(lastKey, mUndonePaths.values.last())
-        mUndonePaths.remove(lastKey)
-        invalidate()*/
+        val last = mUndonePaths.removeLast()
+        mPaths.addLast(last)
+        mPathsR.addFirst(last)
+        invalidate()
     }
 
 /*    fun setColor(newColor: Int, alpha: Int = 255) {
