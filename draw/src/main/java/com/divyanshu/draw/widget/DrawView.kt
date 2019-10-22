@@ -127,11 +127,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         mPath?.onDraw(canvas, mPaint)
     }
 
-    private fun changePaint(paintOptions: PaintOptions) {
-        /*mPaint.color = if (paintOptions.isEraserOn) Color.WHITE else paintOptions.color
-        mPaint.strokeWidth = paintOptions.strokeWidth*/
-    }
-
     fun clearCanvas() {
         mLastPaths.clear()
         mLastPaths.addAll(mPaths)
