@@ -193,12 +193,4 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     override fun destroyDrawingObject() {
         mPath = null
     }
-
-
-    fun toggleEraser() {
-        /*isEraserOn = !isEraserOn
-        mPaintOptions.isEraserOn = isEraserOn
-        invalidate()*/
-    }
-
 }
