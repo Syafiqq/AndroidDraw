@@ -131,6 +131,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         mLastPaths.clear()
         mLastPaths.addAll(mPaths)
         mPaths.clear()
+        mPathsR.clear()
         destroyDrawingObject()
         invalidate()
     }
