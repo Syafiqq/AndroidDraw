@@ -23,9 +23,10 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     override val recordB = Stack<ICommand>()
     private val holder = ArrayList<PathMode>()
 
-    private var _drawingMode: DrawingMode = DrawingMode.LINE
-    private var _drawingTool: PathContainer? = null
     private val toolPath = PathContainer(context, this)
+
+    private var _drawingMode: DrawingMode = DrawingMode.LINE
+    private var _drawingTool: PathContainer? = toolPath
 
     override fun attachToCanvas() {
         val draw = _drawingTool?.draw
