@@ -62,13 +62,15 @@ class PathContainer(override val context: Context, override val drawing: CanvasC
         }
     }
 
-    fun onDraw(canvas: Canvas) {
-        draw?.let {
-            canvas.drawPath(it, paint)
-        }
+    fun onDraw(canvas: Canvas, draw: PathMode) {
+        paint.strokeWidth = draw.strokeWidth
+        paint.color = draw.color
+        canvas.drawPath(draw, paint)
     }
 
     fun createDrawingObject(x: Float, y: Float) {
+        if (draw != null) return
+
         listener.attachPaint(this)
         draw = PathMode().apply {
             color = this@PathContainer.color
@@ -80,6 +82,7 @@ class PathContainer(override val context: Context, override val drawing: CanvasC
 
     fun destroyDrawingObject() {
         draw = null
+        listener.detachComponent()
     }
 
     fun onTouchEvent(event: MotionEvent): Boolean {
