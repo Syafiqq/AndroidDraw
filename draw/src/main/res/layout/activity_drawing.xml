@@ -11,8 +11,12 @@
     <com.divyanshu.draw.widget.DrawView
         android:id="@+id/draw_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_transparent" />
+        android:layout_height="0dp"
+        android:background="@color/color_transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_no" />
 
     <ImageView
         android:id="@+id/image_close_drawing"
@@ -169,5 +173,33 @@
             app:layout_constraintTop_toBottomOf="@id/image_draw_eraser" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/button_yes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Yes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_no"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <Button
+        android:id="@+id/button_no"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="No"
+        app:layout_constraintEnd_toStartOf="@+id/button_yes"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 </androidx.constraintlayout.widget.ConstraintLayout>
