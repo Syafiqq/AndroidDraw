@@ -25,9 +25,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
 
     private var _drawingMode: DrawingMode = DrawingMode.LINE
     private var _drawingTool: PathContainer? = null
-    val drawingTools: Map<DrawingMode, PathContainer> = mapOf(
-            DrawingMode.LINE to PathContainer(context, this)
-    )
+    private val toolPath = PathContainer(context, this)
 
     override fun attachToCanvas() {
         val draw = _drawingTool?.draw
@@ -75,6 +73,19 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
+        holder.forEach {
+            when (it) {
+                is PathMode -> toolPath.onDraw(canvas, it)
+            }
+        }
+
+        _drawingTool?.let { tool ->
+            tool.draw?.let {
+                tool.onDraw(canvas, it)
+            }
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
