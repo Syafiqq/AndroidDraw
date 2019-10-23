@@ -12,6 +12,7 @@ import com.divyanshu.draw.widget.contract.CanvasContract
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.design.command.ICommand
 import com.divyanshu.draw.widget.contract.design.command.ICommandManager
+import com.divyanshu.draw.widget.impl.command.ClearCommand
 import com.divyanshu.draw.widget.mode.PathMode
 import java.util.*
 import kotlin.collections.ArrayList
@@ -35,6 +36,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     fun clearCanvas() {
+        val command = ClearCommand(holder)
+        command.up()
+
+        recordB.push(command)
+        requestInvalidate()
     }
 
     fun undo() {
