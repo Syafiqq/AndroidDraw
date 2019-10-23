@@ -13,13 +13,9 @@ import com.divyanshu.draw.widget.contract.DrawingMode
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), CanvasContract {
     private var _drawingMode: DrawingMode = DrawingMode.LINE
-    val drawingTools: Map<DrawingMode, PathContainer>
-
-    init {
-        drawingTools = mapOf(
-                DrawingMode.LINE to PathContainer(context, this)
-        )
-    }
+    val drawingTools: Map<DrawingMode, PathContainer> = mapOf(
+            DrawingMode.LINE to PathContainer(context, this)
+    )
 
     override fun attachToCanvas() {
 
