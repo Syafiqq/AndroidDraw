@@ -8,6 +8,7 @@ import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import com.divyanshu.draw.widget.contract.ICanvas
 import com.divyanshu.draw.widget.contract.IDrawingContainer
+import com.divyanshu.draw.widget.contract.IMode
 import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.mode.PathMode
 
@@ -57,7 +58,7 @@ class PathContainer(override val context: Context, override val drawing: ICanvas
         }
     }
 
-    override fun onDraw(canvas: Canvas, draw: Any) {
+    override fun onDraw(canvas: Canvas, draw: IMode) {
         if (draw !is PathMode) return
         draw.decorate(paint)
         canvas.drawPath(draw, paint)
