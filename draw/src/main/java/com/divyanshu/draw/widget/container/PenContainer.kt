@@ -58,9 +58,13 @@ class PathContainer(override val context: Context, override val drawing: ICanvas
     }
 
     override fun onDraw(canvas: Canvas, draw: Any) {
-        if(draw !is PathMode) return
+        if (draw !is PathMode) return
         draw.decorate(paint)
         canvas.drawPath(draw, paint)
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        draw?.let { onDraw(canvas, it) }
     }
 
     override fun createDrawingObject(x: Float, y: Float) {
@@ -88,7 +92,7 @@ class PathContainer(override val context: Context, override val drawing: ICanvas
             MotionEvent.ACTION_MOVE -> draw?.onFingerMove(x, y)
             MotionEvent.ACTION_UP -> {
                 draw?.onFingerUp(x, y)
-                drawing.attachToCanvas()
+                draw?.let(drawing::attachToCanvas)
             }
         }
 
