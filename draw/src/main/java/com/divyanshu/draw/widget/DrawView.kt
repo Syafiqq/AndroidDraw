@@ -8,8 +8,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.divyanshu.draw.widget.container.PathContainer
-import com.divyanshu.draw.widget.contract.ICanvas
 import com.divyanshu.draw.widget.contract.DrawingMode
+import com.divyanshu.draw.widget.contract.ICanvas
+import com.divyanshu.draw.widget.contract.IDrawingContainer
 import com.divyanshu.draw.widget.contract.design.command.ICommand
 import com.divyanshu.draw.widget.contract.design.command.ICommandManager
 import com.divyanshu.draw.widget.impl.command.ClearCommand
@@ -21,17 +22,14 @@ import kotlin.collections.ArrayList
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), ICanvas, ICommandManager {
     override val recordF = Stack<ICommand>()
     override val recordB = Stack<ICommand>()
-    private val holder = ArrayList<PathMode>()
+    private val holder = ArrayList<Any>()
 
     private val toolPath = PathContainer(context, this)
 
     private var _drawingMode: DrawingMode = DrawingMode.LINE
-    private var _drawingTool: PathContainer? = toolPath
+    private var _drawingTool: IDrawingContainer? = toolPath
 
-    override fun attachToCanvas() {
-        val draw = _drawingTool?.draw
-        if (draw == null) return
-
+    override fun attachToCanvas(draw: Any) {
         _drawingTool?.destroyDrawingObject()
 
         val command = DrawCommand(holder, draw)
@@ -88,11 +86,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
             }
         }
 
-        _drawingTool?.let { tool ->
-            tool.draw?.let {
-                tool.onDraw(canvas, it)
-            }
-        }
+        _drawingTool?.onDraw(canvas)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
