@@ -90,7 +90,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         performClick()
-        return true
+        if (_drawingTool == null) return true
+
+        _drawingTool?.createDrawingObject(event.x, event.y)
+
+        return _drawingTool?.onTouchEvent(event) ?: true
     }
 
     override fun performClick(): Boolean {
