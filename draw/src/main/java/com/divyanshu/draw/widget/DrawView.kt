@@ -13,6 +13,7 @@ import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.design.command.ICommand
 import com.divyanshu.draw.widget.contract.design.command.ICommandManager
 import com.divyanshu.draw.widget.impl.command.ClearCommand
+import com.divyanshu.draw.widget.impl.command.DrawCommand
 import com.divyanshu.draw.widget.mode.PathMode
 import java.util.*
 import kotlin.collections.ArrayList
@@ -23,12 +24,22 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     private val holder = ArrayList<PathMode>()
 
     private var _drawingMode: DrawingMode = DrawingMode.LINE
+    private var _drawingTool: PathContainer? = null
     val drawingTools: Map<DrawingMode, PathContainer> = mapOf(
             DrawingMode.LINE to PathContainer(context, this)
     )
 
     override fun attachToCanvas() {
+        val draw = _drawingTool?.draw
+        if (draw == null) return
 
+        _drawingTool?.destroyDrawingObject()
+
+        val command = DrawCommand(holder, draw)
+        command.up()
+
+        recordF.push(command)
+        requestInvalidate()
     }
 
     override fun requestInvalidate() {
@@ -39,7 +50,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         val command = ClearCommand(holder)
         command.up()
 
-        recordB.push(command)
+        recordF.push(command)
         requestInvalidate()
     }
 
