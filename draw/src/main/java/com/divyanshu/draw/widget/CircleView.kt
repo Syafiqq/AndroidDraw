@@ -44,4 +44,8 @@ class CircleView(context: Context, attrs: AttributeSet): View(context, attrs) {
         mPaint.color = color
         invalidate()
     }
+
+    fun getColor(): Int {
+        return mPaint.color
+    }
 }
