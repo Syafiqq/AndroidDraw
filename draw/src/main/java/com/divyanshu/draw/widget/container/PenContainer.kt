@@ -7,16 +7,11 @@ import android.view.MotionEvent
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import com.divyanshu.draw.widget.contract.ICanvas
+import com.divyanshu.draw.widget.contract.IDrawingContainer
 import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.mode.PathMode
 
-interface ContainerContract {
-    val context: Context
-    val drawing: ICanvas
-}
-
-
-class PathContainer(override val context: Context, override val drawing: ICanvas) : ContainerContract, IPaint {
+class PathContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
     var draw: PathMode? = null
 
     private val listener: InteractionListener
@@ -62,12 +57,13 @@ class PathContainer(override val context: Context, override val drawing: ICanvas
         }
     }
 
-    fun onDraw(canvas: Canvas, draw: PathMode) {
+    override fun onDraw(canvas: Canvas, draw: Any) {
+        if(draw !is PathMode) return
         draw.decorate(paint)
         canvas.drawPath(draw, paint)
     }
 
-    fun createDrawingObject(x: Float, y: Float) {
+    override fun createDrawingObject(x: Float, y: Float) {
         if (draw != null) return
 
         listener.attachPaint(this)
@@ -79,12 +75,12 @@ class PathContainer(override val context: Context, override val drawing: ICanvas
         drawing.requestInvalidate()
     }
 
-    fun destroyDrawingObject() {
+    override fun destroyDrawingObject() {
         draw = null
         listener.detachComponent()
     }
 
-    fun onTouchEvent(event: MotionEvent): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
 
