@@ -1,8 +1,7 @@
 package com.divyanshu.draw.widget.contract
 
 
-interface DrawingModeContract {
-    var drawingMode: DrawingMode
+interface IDrawingContainer {
     fun createDrawingObject()
     fun destroyDrawingObject()
 }

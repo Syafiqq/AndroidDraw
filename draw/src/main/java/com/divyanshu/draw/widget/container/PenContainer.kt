@@ -6,17 +6,17 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
-import com.divyanshu.draw.widget.contract.CanvasContract
-import com.divyanshu.draw.widget.contract.PaintContract
+import com.divyanshu.draw.widget.contract.ICanvas
+import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.mode.PathMode
 
 interface ContainerContract {
     val context: Context
-    val drawing: CanvasContract
+    val drawing: ICanvas
 }
 
 
-class PathContainer(override val context: Context, override val drawing: CanvasContract) : ContainerContract, PaintContract {
+class PathContainer(override val context: Context, override val drawing: ICanvas) : ContainerContract, IPaint {
     var draw: PathMode? = null
 
     private val listener: InteractionListener
@@ -101,7 +101,7 @@ class PathContainer(override val context: Context, override val drawing: CanvasC
     }
 
     interface InteractionListener {
-        fun attachPaint(paint: PaintContract)
+        fun attachPaint(paint: IPaint)
         fun detachComponent()
     }
 }

@@ -1,6 +1,6 @@
 package com.divyanshu.draw.widget.contract
 
-interface CanvasContract {
+interface ICanvas {
     fun attachToCanvas()
     fun requestInvalidate()
 }

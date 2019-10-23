@@ -14,13 +14,13 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.divyanshu.draw.R
 import com.divyanshu.draw.widget.container.PathContainer
-import com.divyanshu.draw.widget.contract.PaintContract
+import com.divyanshu.draw.widget.contract.IPaint
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
 
 class DrawingActivity : AppCompatActivity(),
 PathContainer.InteractionListener{
-    private var paint: PaintContract? = null
+    private var paint: IPaint? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -234,7 +234,7 @@ PathContainer.InteractionListener{
     private val Int.toPx: Float
         get() = (this * Resources.getSystem().displayMetrics.density)
 
-    override fun attachPaint(paint: PaintContract) {
+    override fun attachPaint(paint: IPaint) {
         this.paint = paint.apply {
             color = circle_view_width.getColor()
             alpha = seekBar_opacity.progress

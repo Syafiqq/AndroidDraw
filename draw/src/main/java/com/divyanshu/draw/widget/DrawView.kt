@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.divyanshu.draw.widget.container.PathContainer
-import com.divyanshu.draw.widget.contract.CanvasContract
+import com.divyanshu.draw.widget.contract.ICanvas
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.design.command.ICommand
 import com.divyanshu.draw.widget.contract.design.command.ICommandManager
@@ -18,7 +18,7 @@ import com.divyanshu.draw.widget.mode.PathMode
 import java.util.*
 import kotlin.collections.ArrayList
 
-class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), CanvasContract, ICommandManager {
+class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), ICanvas, ICommandManager {
     override val recordF = Stack<ICommand>()
     override val recordB = Stack<ICommand>()
     private val holder = ArrayList<PathMode>()
