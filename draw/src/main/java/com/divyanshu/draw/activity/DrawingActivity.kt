@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.core.content.res.ResourcesCompat
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.SeekBar
 import com.afollestad.materialdialogs.MaterialDialog
@@ -14,6 +16,7 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.divyanshu.draw.R
 import com.divyanshu.draw.widget.container.PenContainer
+import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IPaint
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
@@ -55,9 +58,31 @@ PenContainer.InteractionListener{
 
         setPaintWidth()
 
+        setUpSpinner()
+
         Handler().postDelayed({
             image_color_black.callOnClick()
         }, 250)
+    }
+
+    private fun setUpSpinner() {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOf("Line", "Erase", "Text", "Image"))
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                draw_view.drawingMode = null
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                draw_view.drawingMode = when(position) {
+                    0 -> DrawingMode.LINE
+                    1 -> DrawingMode.ERASE
+                    2 -> DrawingMode.TEXT
+                    3 -> DrawingMode.IMAGE
+                    else -> null
+                }
+            }
+        }
     }
 
     private fun setUpDrawTools() {
