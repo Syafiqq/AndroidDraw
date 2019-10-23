@@ -1,16 +1,10 @@
 package com.divyanshu.draw.activity
 
-import android.app.Activity
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.widget.ImageViewCompat
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -19,12 +13,10 @@ import com.afollestad.materialdialogs.ModalDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.divyanshu.draw.R
-import com.divyanshu.draw.widget.DrawView
-import com.divyanshu.draw.widget.component.PathContainer
+import com.divyanshu.draw.widget.container.PathContainer
 import com.divyanshu.draw.widget.contract.PaintContract
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
-import java.io.ByteArrayOutputStream
 
 class DrawingActivity : AppCompatActivity(),
 PathContainer.InteractionListener{

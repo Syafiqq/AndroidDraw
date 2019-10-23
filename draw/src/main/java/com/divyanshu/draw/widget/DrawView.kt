@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.divyanshu.draw.widget.component.PathContainer
+import com.divyanshu.draw.widget.container.PathContainer
 import com.divyanshu.draw.widget.contract.CanvasContract
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.design.command.ICommand
