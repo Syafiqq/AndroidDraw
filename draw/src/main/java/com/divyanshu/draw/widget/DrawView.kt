@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -29,6 +30,16 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
 
     private var _drawingMode: DrawingMode = DrawingMode.LINE
     private var _drawingTool: IDrawingContainer? = toolPath
+
+    init {
+        val paint = Paint().apply {
+            alpha = 0xFF
+            color = Color.WHITE
+            maskFilter = null
+            xfermode = null
+        }
+        setLayerType(LAYER_TYPE_HARDWARE, paint)
+    }
 
     override fun attachToCanvas(draw: IMode) {
         _drawingTool?.destroyDrawingObject()
