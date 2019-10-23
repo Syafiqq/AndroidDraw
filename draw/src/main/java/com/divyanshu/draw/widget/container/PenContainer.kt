@@ -12,8 +12,8 @@ import com.divyanshu.draw.widget.contract.IMode
 import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.mode.PathMode
 
-class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
-    var draw: PathMode? = null
+open class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
+    private var draw: PathMode? = null
 
     private val listener: InteractionListener
 
@@ -46,11 +46,12 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
         }
 
     init {
-        if (context !is InteractionListener) {
+        val ctx = this.context
+        if (ctx !is InteractionListener) {
             throw ClassCastException("context must implement InteractionListener")
         }
 
-        listener = context
+        listener = ctx
         with(paint) {
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
