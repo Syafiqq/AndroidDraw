@@ -27,9 +27,22 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
     private val holder = ArrayList<IMode>()
 
     private val toolPath = PenContainer(context, this)
+    private val eraserPath = PenContainer(context, this)
 
-    private var _drawingMode: DrawingMode = DrawingMode.LINE
-    private var _drawingTool: IDrawingContainer? = toolPath
+    private var drawingTool: IDrawingContainer? = toolPath
+    private var _drawingMode: DrawingMode? = null
+    var drawingMode: DrawingMode?
+        get() = _drawingMode
+        set(value) {
+            if (_drawingMode == value) return
+            _drawingMode = value
+            drawingTool?.destroyDrawingObject()
+            drawingTool = when (value) {
+                DrawingMode.LINE -> toolPath
+                DrawingMode.ERASE -> eraserPath
+                else -> null
+            }
+        }
 
     init {
         val paint = Paint().apply {
@@ -42,7 +55,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
     }
 
     override fun attachToCanvas(draw: IMode) {
-        _drawingTool?.destroyDrawingObject()
+        drawingTool?.destroyDrawingObject()
 
         val command = DrawCommand(holder, draw)
         command.up()
@@ -98,16 +111,16 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
             }
         }
 
-        _drawingTool?.onDraw(canvas)
+        drawingTool?.onDraw(canvas)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         performClick()
-        if (_drawingTool == null) return true
+        if (drawingTool == null) return true
 
-        _drawingTool?.createDrawingObject(event.x, event.y)
+        drawingTool?.createDrawingObject(event.x, event.y)
 
-        return _drawingTool?.onTouchEvent(event) ?: true
+        return drawingTool?.onTouchEvent(event) ?: true
     }
 
     override fun performClick(): Boolean {
