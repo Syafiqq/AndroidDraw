@@ -20,11 +20,15 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.divyanshu.draw.R
 import com.divyanshu.draw.widget.DrawView
+import com.divyanshu.draw.widget.component.PathContainer
+import com.divyanshu.draw.widget.contract.PaintContract
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
 import java.io.ByteArrayOutputStream
 
-class DrawingActivity : AppCompatActivity() {
+class DrawingActivity : AppCompatActivity(),
+PathContainer.InteractionListener{
+    private var paint: PaintContract? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,8 +65,6 @@ class DrawingActivity : AppCompatActivity() {
 
         Handler().postDelayed({
             image_color_black.callOnClick()
-            draw_view.alpha = 100
-            draw_view.strokeWidth = 8F
         }, 250)
     }
 
@@ -134,49 +136,49 @@ class DrawingActivity : AppCompatActivity() {
     private fun colorSelector() {
         image_color_black.setOnClickListener {
             val color = ResourcesCompat.getColor(resources, R.color.color_black,null)
-            draw_view.color = color
+            paint?.color = color
             circle_view_opacity.setColor(color)
             circle_view_width.setColor(color)
             scaleColorView(image_color_black)
         }
         image_color_red.setOnClickListener {
             val color = ResourcesCompat.getColor(resources, R.color.color_red,null)
-            draw_view.color = color
+            paint?.color = color
             circle_view_opacity.setColor(color)
             circle_view_width.setColor(color)
             scaleColorView(image_color_red)
         }
         image_color_yellow.setOnClickListener {
             val color = ResourcesCompat.getColor(resources, R.color.color_yellow,null)
-            draw_view.color = color
+            paint?.color = color
             circle_view_opacity.setColor(color)
             circle_view_width.setColor(color)
             scaleColorView(image_color_yellow)
         }
         image_color_green.setOnClickListener {
             val color = ResourcesCompat.getColor(resources, R.color.color_green,null)
-            draw_view.color = color
+            paint?.color = color
             circle_view_opacity.setColor(color)
             circle_view_width.setColor(color)
             scaleColorView(image_color_green)
         }
         image_color_blue.setOnClickListener {
             val color = ResourcesCompat.getColor(resources, R.color.color_blue,null)
-            draw_view.color = color
+            paint?.color = color
             circle_view_opacity.setColor(color)
             circle_view_width.setColor(color)
             scaleColorView(image_color_blue)
         }
         image_color_pink.setOnClickListener {
             val color = ResourcesCompat.getColor(resources, R.color.color_pink,null)
-            draw_view.color = color
+            paint?.color = color
             circle_view_opacity.setColor(color)
             circle_view_width.setColor(color)
             scaleColorView(image_color_pink)
         }
         image_color_brown.setOnClickListener {
             val color =  ResourcesCompat.getColor(resources, R.color.color_brown,null)
-            draw_view.color = color
+            paint?.color = color
             circle_view_opacity.setColor(color)
             circle_view_width.setColor(color)
             scaleColorView(image_color_brown)
@@ -214,7 +216,7 @@ class DrawingActivity : AppCompatActivity() {
     private fun setPaintWidth() {
         seekBar_width.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                draw_view.strokeWidth = progress.toFloat()
+                paint?.strokeWidth = progress.toFloat()
                 circle_view_width.setCircleRadius(progress.toFloat())
             }
 
@@ -227,7 +229,7 @@ class DrawingActivity : AppCompatActivity() {
     private fun setPaintAlpha() {
         seekBar_opacity.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                draw_view.alpha = progress
+                paint?.alpha = progress
                 circle_view_opacity.setAlpha(progress)
             }
 
@@ -239,4 +241,16 @@ class DrawingActivity : AppCompatActivity() {
 
     private val Int.toPx: Float
         get() = (this * Resources.getSystem().displayMetrics.density)
+
+    override fun attachPaint(paint: PaintContract) {
+        this.paint = paint.apply {
+            color = circle_view_width.getColor()
+            alpha = seekBar_opacity.progress
+            strokeWidth = seekBar_width.progress.toFloat()
+        }
+    }
+
+    override fun detachComponent() {
+        paint = null
+    }
 }
