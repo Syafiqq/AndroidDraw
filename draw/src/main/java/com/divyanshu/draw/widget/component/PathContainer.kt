@@ -100,5 +100,6 @@ class PathContainer(override val context: Context, override val drawing: CanvasC
 
     interface InteractionListener {
         fun attachPaint(paint: PaintContract)
+        fun detachComponent()
     }
 }
