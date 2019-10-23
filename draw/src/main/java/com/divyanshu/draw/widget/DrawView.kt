@@ -8,7 +8,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.divyanshu.draw.widget.container.PathContainer
+import com.divyanshu.draw.widget.container.PenContainer
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.ICanvas
 import com.divyanshu.draw.widget.contract.IDrawingContainer
@@ -26,7 +26,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
     override val recordB = Stack<ICommand>()
     private val holder = ArrayList<IMode>()
 
-    private val toolPath = PathContainer(context, this)
+    private val toolPath = PenContainer(context, this)
 
     private var _drawingMode: DrawingMode = DrawingMode.LINE
     private var _drawingTool: IDrawingContainer? = toolPath

@@ -12,7 +12,7 @@ import com.divyanshu.draw.widget.contract.IMode
 import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.mode.PathMode
 
-class PathContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
+class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
     var draw: PathMode? = null
 
     private val listener: InteractionListener
@@ -73,8 +73,8 @@ class PathContainer(override val context: Context, override val drawing: ICanvas
 
         listener.attachPaint(this)
         draw = PathMode().apply {
-            color = this@PathContainer.color
-            strokeWidth = this@PathContainer.strokeWidth
+            color = this@PenContainer.color
+            strokeWidth = this@PenContainer.strokeWidth
             onFingerDown(x, y)
         }
         drawing.requestInvalidate()
