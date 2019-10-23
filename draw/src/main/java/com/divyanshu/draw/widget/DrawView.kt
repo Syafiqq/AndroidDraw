@@ -38,6 +38,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
         command.up()
 
         recordF.push(command)
+        recordB.clear()
+
         requestInvalidate()
     }
 
@@ -46,10 +48,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), Ca
     }
 
     fun clearCanvas() {
+        if (holder.isEmpty()) return
+
         val command = ClearCommand(holder)
         command.up()
 
         recordF.push(command)
+        recordB.clear()
+
         requestInvalidate()
     }
 
