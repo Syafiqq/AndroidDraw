@@ -63,8 +63,7 @@ class PathContainer(override val context: Context, override val drawing: CanvasC
     }
 
     fun onDraw(canvas: Canvas, draw: PathMode) {
-        paint.strokeWidth = draw.strokeWidth
-        paint.color = draw.color
+        draw.decorate(paint)
         canvas.drawPath(draw, paint)
     }
 

@@ -1,5 +1,6 @@
 package com.divyanshu.draw.widget.mode
 
+import android.graphics.Paint
 import android.graphics.Path
 
 class PathMode : Path() {
@@ -41,5 +42,10 @@ class PathMode : Path() {
     private fun initialPos(x: Float, y: Float) {
         initX = x
         initY = y
+    }
+
+    fun decorate(paint: Paint) {
+        paint.strokeWidth = strokeWidth
+        paint.color = color
     }
 }
