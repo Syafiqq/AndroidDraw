@@ -7,10 +7,27 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.divyanshu.draw.widget.component.PathContainer
+import com.divyanshu.draw.widget.contract.CanvasContract
 import com.divyanshu.draw.widget.contract.DrawingMode
 
-class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), CanvasContract {
     private var _drawingMode: DrawingMode = DrawingMode.LINE
+    val drawingTools: Map<DrawingMode, PathContainer>
+
+    init {
+        drawingTools = mapOf(
+                DrawingMode.LINE to PathContainer(context, this)
+        )
+    }
+
+    override fun attachToCanvas() {
+
+    }
+
+    override fun requestInvalidate() {
+        invalidate()
+    }
 
     fun clearCanvas() {
     }
