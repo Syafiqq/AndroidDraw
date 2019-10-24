@@ -6,12 +6,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.view.MotionEvent
-import androidx.annotation.ColorInt
-import androidx.core.graphics.ColorUtils
-import com.divyanshu.draw.widget.contract.ICanvas
-import com.divyanshu.draw.widget.contract.IDrawingContainer
-import com.divyanshu.draw.widget.contract.IMode
-import com.divyanshu.draw.widget.contract.IPaint
+import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.PathMode
 
 class EraserContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
@@ -19,33 +14,19 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
 
     private val listener: InteractionListener
 
-    private var _color = 0
     private var _strokeWidth = 0F
-    private var _alpha = 0
 
     private val paint = Paint()
 
 
-    override var color: Int
-        get() = _color
-        set(value) {
-            @ColorInt
-            val alphaColor = ColorUtils.setAlphaComponent(value, alpha)
-            _color = alphaColor
-            draw?.color = alphaColor
-        }
+    override var color = 0xFF
     override var strokeWidth: Float
         get() = _strokeWidth
         set(value) {
             _strokeWidth = value
             draw?.strokeWidth = value
         }
-    override var alpha: Int
-        get() = _alpha
-        set(value) {
-            _alpha = (value * 255) / 100
-            color = color
-        }
+    override var alpha = 0x00
 
     init {
         val ctx = this.context
@@ -77,7 +58,7 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
         if (draw != null) return
 
         listener.attachPaint(this)
-        draw = PathMode().apply {
+        draw = PathMode(DrawingMode.ERASE).apply {
             color = this@EraserContainer.color
             strokeWidth = this@EraserContainer.strokeWidth
             onFingerDown(x, y)

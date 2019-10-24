@@ -18,7 +18,6 @@ import com.divyanshu.draw.widget.contract.design.command.ICommand
 import com.divyanshu.draw.widget.contract.design.command.ICommandManager
 import com.divyanshu.draw.widget.impl.command.ClearCommand
 import com.divyanshu.draw.widget.impl.command.DrawCommand
-import com.divyanshu.draw.widget.mode.PathMode
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -27,10 +26,10 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
     override val recordB = Stack<ICommand>()
     private val holder = ArrayList<IMode>()
 
-    private val toolPath = PenContainer(context, this)
+    private val linePath = PenContainer(context, this)
     private val eraserPath = EraserContainer(context, this)
 
-    private var drawingTool: IDrawingContainer? = toolPath
+    private var drawingTool: IDrawingContainer? = linePath
     private var _drawingMode: DrawingMode? = null
     var drawingMode: DrawingMode?
         get() = _drawingMode
@@ -39,7 +38,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
             _drawingMode = value
             drawingTool?.destroyDrawingObject()
             drawingTool = when (value) {
-                DrawingMode.LINE -> toolPath
+                DrawingMode.LINE -> linePath
                 DrawingMode.ERASE -> eraserPath
                 else -> null
             }
@@ -107,8 +106,10 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
         super.onDraw(canvas)
 
         holder.forEach {
-            when (it) {
-                is PathMode -> toolPath.onDraw(canvas, it)
+            when (it.mode) {
+                DrawingMode.LINE -> linePath.onDraw(canvas, it)
+                DrawingMode.ERASE -> eraserPath.onDraw(canvas, it)
+                else -> {}
             }
         }
 

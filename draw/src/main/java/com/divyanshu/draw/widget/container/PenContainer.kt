@@ -6,10 +6,7 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
-import com.divyanshu.draw.widget.contract.ICanvas
-import com.divyanshu.draw.widget.contract.IDrawingContainer
-import com.divyanshu.draw.widget.contract.IMode
-import com.divyanshu.draw.widget.contract.IPaint
+import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.PathMode
 
 class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
@@ -73,7 +70,7 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
         if (draw != null) return
 
         listener.attachPaint(this)
-        draw = PathMode().apply {
+        draw = PathMode(DrawingMode.LINE).apply {
             color = this@PenContainer.color
             strokeWidth = this@PenContainer.strokeWidth
             onFingerDown(x, y)

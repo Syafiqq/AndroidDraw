@@ -2,9 +2,10 @@ package com.divyanshu.draw.widget.mode
 
 import android.graphics.Paint
 import android.graphics.Path
+import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IMode
 
-class PathMode : Path(), IMode {
+class PathMode(override val mode: DrawingMode) : Path(), IMode {
     var color = 0
     var strokeWidth = 0F
 
