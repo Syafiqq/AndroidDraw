@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.divyanshu.draw.widget.container.EraserContainer
 import com.divyanshu.draw.widget.container.PenContainer
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.ICanvas
@@ -27,7 +28,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
     private val holder = ArrayList<IMode>()
 
     private val toolPath = PenContainer(context, this)
-    private val eraserPath = PenContainer(context, this)
+    private val eraserPath = EraserContainer(context, this)
 
     private var drawingTool: IDrawingContainer? = toolPath
     private var _drawingMode: DrawingMode? = null

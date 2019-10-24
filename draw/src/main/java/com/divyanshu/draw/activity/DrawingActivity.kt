@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.ModalDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.divyanshu.draw.R
+import com.divyanshu.draw.widget.container.EraserContainer
 import com.divyanshu.draw.widget.container.PenContainer
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IPaint
@@ -22,7 +23,8 @@ import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
 
 class DrawingActivity : AppCompatActivity(),
-PenContainer.InteractionListener{
+        PenContainer.InteractionListener,
+        EraserContainer.InteractionListener {
     private var paint: IPaint? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

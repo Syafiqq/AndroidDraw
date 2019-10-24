@@ -12,7 +12,7 @@ import com.divyanshu.draw.widget.contract.IMode
 import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.mode.PathMode
 
-open class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
+class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
     private var draw: PathMode? = null
 
     private val listener: InteractionListener
