@@ -84,6 +84,8 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (draw == null) return true
+
         val x = event.x
         val y = event.y
 

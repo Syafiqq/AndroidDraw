@@ -72,6 +72,8 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (draw == null) return true
+
         val x = event.x
         val y = event.y
 
