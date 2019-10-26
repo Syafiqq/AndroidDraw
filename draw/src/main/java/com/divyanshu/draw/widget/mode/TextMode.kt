@@ -9,9 +9,11 @@ import com.divyanshu.draw.widget.contract.IMode
 class TextMode(override val mode: DrawingMode) : IMode {
     var color = 0
     var textSize = 0F
+        private set
 
     var text: String? = null
-    var dim = Rect()
+        private set
+    private var dim = Rect()
 
     var isInBound = false
 
@@ -40,12 +42,23 @@ class TextMode(override val mode: DrawingMode) : IMode {
         paint.color = color
     }
 
-    fun initializeText(text: String, paint: Paint) {
+    fun updateText(text: String, paint: Paint) {
         this.text = text
         updateTextDimension(paint)
     }
 
-    fun updateTextDimension(paint: Paint) {
+    fun updateTextSize(textSize: Float, paint: Paint) {
+        this.textSize = textSize
+        updateTextDimension(paint)
+    }
+
+    fun updateTextAndSize(text: String, textSize: Float, paint: Paint) {
+        this.text = text
+        this.textSize = textSize
+        updateTextDimension(paint)
+    }
+
+    private fun updateTextDimension(paint: Paint) {
         text?.let {
             decorate(paint)
             paint.getTextBounds(it, 0, it.length, dim)
