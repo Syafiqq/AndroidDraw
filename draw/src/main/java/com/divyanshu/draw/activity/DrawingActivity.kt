@@ -72,6 +72,14 @@ class DrawingActivity : AppCompatActivity(),
         Handler().postDelayed({
             image_color_black.callOnClick()
         }, 250)
+
+        button_no?.setOnClickListener {
+            textDrawCallback?.onCancel()
+        }
+
+        button_yes?.setOnClickListener {
+            textDrawCallback?.onApply()
+        }
     }
 
     private fun setUpSpinner() {
@@ -292,5 +300,6 @@ class DrawingActivity : AppCompatActivity(),
 
     override fun detachComponent() {
         paint = null
+        textDrawCallback = null
     }
 }
