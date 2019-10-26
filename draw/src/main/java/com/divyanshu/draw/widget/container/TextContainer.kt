@@ -10,7 +10,7 @@ import com.divyanshu.draw.util.UnitConverter
 import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.TextMode
 
-class TextContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint, TextDrawCallback {
+class TextContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint, ITextDrawCallback {
     private var draw: TextMode? = null
 
     private val listener: InteractionListener
@@ -94,7 +94,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     }
 
     interface InteractionListener {
-        fun attachComponent(paint: IPaint, callback: TextDrawCallback)
+        fun attachComponent(paint: IPaint, callback: ITextDrawCallback)
         fun requestText()
         fun detachComponent()
     }

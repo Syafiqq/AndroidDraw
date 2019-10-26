@@ -1,6 +1,6 @@
 package com.divyanshu.draw.widget.contract
 
-interface TextDrawCallback {
+interface ITextDrawCallback {
     fun onTextRetrieved(text: String, textSize: Float?)
     fun onApply()
 }
