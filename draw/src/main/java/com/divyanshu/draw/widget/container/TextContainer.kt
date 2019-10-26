@@ -9,17 +9,16 @@ import androidx.core.graphics.ColorUtils
 import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.PathMode
 
-class TextContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
+class TextContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint, TextDrawCallback {
     private var draw: PathMode? = null
 
     private val listener: InteractionListener
 
     private var _color = 0
-    private var _strokeWidth = 0F
     private var _alpha = 0
+    private var _textSize = 0F
 
     private val paint = Paint()
-
 
     override var color: Int
         get() = _color
@@ -29,19 +28,18 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
             _color = alphaColor
             draw?.color = alphaColor
         }
-    override var strokeWidth: Float
-        get() = _strokeWidth
-        set(value) {
-            _strokeWidth = value
-            draw?.strokeWidth = value
-        }
+    override var strokeWidth = 0F
     override var alpha: Int
         get() = _alpha
         set(value) {
             _alpha = (value * 255) / 100
             color = color
         }
-    override var textSize = 0F
+    override var textSize: Float
+        get() = _textSize
+        set(value) {
+            _textSize = value
+        }
 
     init {
         val ctx = this.context
@@ -50,11 +48,6 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         }
 
         listener = ctx
-        with(paint) {
-            style = Paint.Style.STROKE
-            strokeJoin = Paint.Join.ROUND
-            strokeCap = Paint.Cap.ROUND
-        }
     }
 
     override fun onDraw(canvas: Canvas, draw: IMode) {
@@ -70,7 +63,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     override fun createDrawingObject(x: Float, y: Float) {
         if (draw != null) return
 
-        listener.attachPaint(this)
+        listener.attachComponent(this, this)
         draw = PathMode(DrawingMode.LINE).apply {
             color = this@TextContainer.color
             strokeWidth = this@TextContainer.strokeWidth
@@ -100,8 +93,12 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         return true
     }
 
+    override fun onTextRetrieved(text: String, textSize: Float?) {
+        textSize?.let { this@TextContainer.textSize = textSize }
+    }
+
     interface InteractionListener {
-        fun attachPaint(paint: IPaint)
+        fun attachComponent(paint: IPaint, callback: TextDrawCallback)
         fun detachComponent()
     }
 }
