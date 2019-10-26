@@ -39,7 +39,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         get() = _textSize
         set(value) {
             _textSize = value
-            draw?.textSize = _textSize
+            draw?.updateTextSize(_textSize, paint)
         }
 
     init {
@@ -66,7 +66,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         listener.attachComponent(this, this)
         draw = TextMode(DrawingMode.TEXT).apply {
             color = this@TextContainer.color
-            textSize = this@TextContainer.textSize
+            updateTextSize(this@TextContainer.textSize, paint)
             currentPos(x, y)
         }
         listener.requestText()
@@ -95,8 +95,10 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
 
     override fun onTextRetrieved(text: String, textSize: Float?) {
         draw?.run {
-            textSize?.let { this@TextContainer.textSize = textSize }
-            initializeText(text, paint)
+            if(textSize == null)
+                updateText(text, paint)
+            else
+                updateTextAndSize(text, textSize, paint)
             drawing.requestInvalidate()
         }
     }
