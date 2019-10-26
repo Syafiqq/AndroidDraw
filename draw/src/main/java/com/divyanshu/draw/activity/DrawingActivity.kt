@@ -1,6 +1,8 @@
 package com.divyanshu.draw.activity
 
+import android.content.ContentResolver
 import android.content.res.Resources
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -12,16 +14,15 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
-import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.input.getInputField
 import com.divyanshu.draw.R
-import com.divyanshu.draw.extension.com.afollestad.materialdialogs.input.resizeableInput
 import com.divyanshu.draw.widget.container.EraserContainer
+import com.divyanshu.draw.widget.container.ImageContainer
 import com.divyanshu.draw.widget.container.PenContainer
 import com.divyanshu.draw.widget.container.TextContainer
 import com.divyanshu.draw.widget.contract.DrawingMode
+import com.divyanshu.draw.widget.contract.IImageDrawCallback
 import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.contract.ITextDrawCallback
 import kotlinx.android.synthetic.main.activity_drawing.*
@@ -30,8 +31,10 @@ import kotlinx.android.synthetic.main.color_palette_view.*
 class DrawingActivity : AppCompatActivity(),
         PenContainer.InteractionListener,
         EraserContainer.InteractionListener,
-        TextContainer.InteractionListener {
+        TextContainer.InteractionListener,
+        ImageContainer.InteractionListener {
 
+    private var imageDrawCallback: IImageDrawCallback? = null
     private var textDrawCallback: ITextDrawCallback? = null
     private var paint: IPaint? = null
 
@@ -76,18 +79,22 @@ class DrawingActivity : AppCompatActivity(),
 
         button_no?.setOnClickListener {
             textDrawCallback?.onCancel()
+            imageDrawCallback?.onCancel()
         }
 
         button_yes?.setOnClickListener {
             textDrawCallback?.onApply()
+            imageDrawCallback?.onApply()
         }
 
         button_scale_down?.setOnClickListener {
             textDrawCallback?.onScaleDown()
+            imageDrawCallback?.onScaleDown()
         }
 
         button_scale_up?.setOnClickListener {
             textDrawCallback?.onScaleUp()
+            imageDrawCallback?.onScaleUp()
         }
     }
 
@@ -295,7 +302,11 @@ class DrawingActivity : AppCompatActivity(),
 
     override fun attachComponent(paint: IPaint, callback: ITextDrawCallback) {
         attachComponent(paint)
-        this.textDrawCallback = callback
+        textDrawCallback = callback
+    }
+
+    override fun attachComponent(callback: IImageDrawCallback) {
+        imageDrawCallback = callback
     }
 
     override fun requestText() {
@@ -310,8 +321,22 @@ class DrawingActivity : AppCompatActivity(),
         }
     }
 
+    override fun requestImage() {
+        val image = R.drawable.fff
+        val uri = Uri.Builder()
+                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                .authority(resources.getResourcePackageName(image))
+                .appendPath(resources.getResourceTypeName(image))
+                .appendPath(resources.getResourceEntryName(image))
+                .build()
+        contentResolver.openInputStream(uri)?.run {
+            imageDrawCallback?.onImageRetreived(this)
+        }
+    }
+
     override fun detachComponent() {
         paint = null
         textDrawCallback = null
+        imageDrawCallback = null
     }
 }
