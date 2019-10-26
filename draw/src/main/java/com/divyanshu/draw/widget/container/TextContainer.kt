@@ -6,7 +6,6 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
-import com.divyanshu.draw.util.UnitConverter
 import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.TextMode
 
@@ -68,7 +67,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         draw = TextMode(DrawingMode.TEXT).apply {
             color = this@TextContainer.color
             textSize = this@TextContainer.textSize
-            onFingerDown(x, y)
+            currentPos(x, y)
         }
         listener.requestText()
     }
@@ -79,18 +78,34 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (draw == null) return true
+
+        val x = event.x
+        val y = event.y
+
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> draw?.onFingerDown(x, y)
+            MotionEvent.ACTION_MOVE -> draw?.onFingerMove(x, y)
+            MotionEvent.ACTION_UP ->  draw?.onFingerUp(x, y)
+        }
+
+        drawing.requestInvalidate()
         return true
     }
 
     override fun onTextRetrieved(text: String, textSize: Float?) {
-        draw?.text = text
-        textSize?.let { this@TextContainer.textSize = textSize }
-        drawing.requestInvalidate()
+        draw?.run {
+            initializeText(text, paint)
+            textSize?.let { this@TextContainer.textSize = textSize }
+            drawing.requestInvalidate()
+        }
     }
 
     override fun onApply() {
-        draw?.let(drawing::attachToCanvas)
-        drawing.requestInvalidate()
+        draw?.run {
+            drawing.attachToCanvas(this)
+            drawing.requestInvalidate()
+        }
     }
 
     override fun onCancel() {
