@@ -1,5 +1,6 @@
 package com.divyanshu.draw.widget.mode
 
+import android.graphics.Canvas
 import android.graphics.Paint
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IMode
@@ -38,8 +39,15 @@ class TextMode(override val mode: DrawingMode) : IMode {
         initY = y
     }
 
-    fun decorate(paint: Paint) {
+    private fun decorate(paint: Paint) {
         paint.textSize = textSize
         paint.color = color
+    }
+
+    fun onDraw(canvas: Canvas, paint: Paint) {
+        text?.let {
+            decorate(paint)
+            canvas.drawText(it, initX, initY, paint)
+        }
     }
 }
