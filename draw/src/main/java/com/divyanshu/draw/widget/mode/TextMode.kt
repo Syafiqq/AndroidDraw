@@ -8,6 +8,8 @@ class TextMode(override val mode: DrawingMode) : IMode {
     var color = 0
     var textSize = 0F
 
+    var text: String? = null
+
     private var curX = 0F
     private var curY = 0F
     private var initX = 0F
