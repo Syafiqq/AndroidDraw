@@ -39,7 +39,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     override var textSize: Float
         get() = _textSize
         set(value) {
-            _textSize = UnitConverter.spToPx(context, value)
+            _textSize = value
             draw?.textSize = _textSize
         }
 
