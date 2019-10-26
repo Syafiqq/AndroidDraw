@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IMode
+import kotlin.math.abs
 
 class TextMode(override val mode: DrawingMode) : IMode {
     private val selThreshold = 32
@@ -17,7 +18,11 @@ class TextMode(override val mode: DrawingMode) : IMode {
         private set
     private var dim = Rect()
 
-    var isInBound = false
+    private var scale:Int = 0
+    private val scaledMax = 10
+    private val scaleSize = 4
+
+    private var isInBound = false
 
     private var curX = 0F
     private var curY = 0F
@@ -55,7 +60,7 @@ class TextMode(override val mode: DrawingMode) : IMode {
     }
 
     private fun decorate(paint: Paint) {
-        paint.textSize = textSize
+        paint.textSize = textSize + (scale * scaleSize)
         paint.color = color
     }
 
@@ -79,6 +84,29 @@ class TextMode(override val mode: DrawingMode) : IMode {
         text?.let {
             decorate(paint)
             paint.getTextBounds(it, 0, it.length, dim)
+        }
+    }
+
+    fun scaledUp(paint: Paint) {
+        val _scale = scale + 1
+        when {
+            abs(_scale) > scaledMax -> return
+            else -> {
+                ++scale
+                updateTextDimension(paint)
+            }
+        }
+    }
+
+    fun scaledDown(paint: Paint) {
+        val _scale = scale - 1
+        when {
+            abs(_scale) > scaledMax -> return
+            textSize + (_scale * scaleSize) < 4 -> return
+            else -> {
+                --scale
+                updateTextDimension(paint)
+            }
         }
     }
 

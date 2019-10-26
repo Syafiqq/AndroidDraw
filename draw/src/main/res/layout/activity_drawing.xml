@@ -202,4 +202,24 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <Button
+        android:id="@+id/button_scale_up"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="+"
+        app:layout_constraintBottom_toTopOf="@+id/draw_tools"
+        app:layout_constraintEnd_toEndOf="@+id/draw_tools"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_no" />
+
+    <Button
+        android:id="@+id/button_scale_down"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="-"
+        app:layout_constraintBottom_toTopOf="@+id/draw_tools"
+        app:layout_constraintEnd_toStartOf="@+id/button_yes"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/draw_tools" />
 </androidx.constraintlayout.widget.ConstraintLayout>

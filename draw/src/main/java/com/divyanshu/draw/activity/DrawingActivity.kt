@@ -81,6 +81,14 @@ class DrawingActivity : AppCompatActivity(),
         button_yes?.setOnClickListener {
             textDrawCallback?.onApply()
         }
+
+        button_scale_down?.setOnClickListener {
+            textDrawCallback?.onScaleDown()
+        }
+
+        button_scale_up?.setOnClickListener {
+            textDrawCallback?.onScaleUp()
+        }
     }
 
     private fun setUpSpinner() {

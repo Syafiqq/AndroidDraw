@@ -116,6 +116,16 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         drawing.requestInvalidate()
     }
 
+    override fun onScaleUp() {
+        draw?.scaledUp(paint)
+        drawing.requestInvalidate()
+    }
+
+    override fun onScaleDown() {
+        draw?.scaledDown(paint)
+        drawing.requestInvalidate()
+    }
+
     interface InteractionListener {
         fun attachComponent(paint: IPaint, callback: ITextDrawCallback)
         fun requestText()
