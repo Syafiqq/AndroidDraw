@@ -93,6 +93,11 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         drawing.requestInvalidate()
     }
 
+    override fun onCancel() {
+        destroyDrawingObject()
+        drawing.requestInvalidate()
+    }
+
     interface InteractionListener {
         fun attachComponent(paint: IPaint, callback: ITextDrawCallback)
         fun requestText()
