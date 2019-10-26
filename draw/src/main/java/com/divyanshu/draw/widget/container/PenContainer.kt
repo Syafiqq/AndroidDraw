@@ -41,6 +41,7 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
             _alpha = (value * 255) / 100
             color = color
         }
+    override var textSize = 0F
 
     init {
         val ctx = this.context

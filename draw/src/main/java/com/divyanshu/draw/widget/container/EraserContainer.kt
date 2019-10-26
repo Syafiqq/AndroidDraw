@@ -27,6 +27,7 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
             draw?.strokeWidth = value
         }
     override var alpha = 0x00
+    override var textSize = 0F
 
     init {
         val ctx = this.context
