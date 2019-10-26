@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
+import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.getInputField
@@ -293,6 +294,9 @@ class DrawingActivity : AppCompatActivity(),
         MaterialDialog(this).show {
             resizeableInput { dialog, text ->
                 textDrawCallback?.onTextRetrieved(text.toString(), dialog.getInputField().textSize)
+            }
+            onCancel {
+                textDrawCallback?.onCancel()
             }
             positiveButton(R.string.app_name)
         }
