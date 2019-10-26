@@ -6,11 +6,12 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
+import com.divyanshu.draw.util.UnitConverter
 import com.divyanshu.draw.widget.contract.*
-import com.divyanshu.draw.widget.mode.PathMode
+import com.divyanshu.draw.widget.mode.TextMode
 
 class TextContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint, TextDrawCallback {
-    private var draw: PathMode? = null
+    private var draw: TextMode? = null
 
     private val listener: InteractionListener
 
@@ -38,7 +39,8 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     override var textSize: Float
         get() = _textSize
         set(value) {
-            _textSize = value
+            _textSize = UnitConverter.spToPx(context, value)
+            draw?.textSize = _textSize
         }
 
     init {
@@ -51,9 +53,8 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     }
 
     override fun onDraw(canvas: Canvas, draw: IMode) {
-        if (draw !is PathMode) return
-        draw.decorate(paint)
-        canvas.drawPath(draw, paint)
+        if (draw !is TextMode) return
+        draw.onDraw(canvas, paint)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -64,12 +65,12 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         if (draw != null) return
 
         listener.attachComponent(this, this)
-        draw = PathMode(DrawingMode.LINE).apply {
+        draw = TextMode(DrawingMode.TEXT).apply {
             color = this@TextContainer.color
-            strokeWidth = this@TextContainer.strokeWidth
+            textSize = this@TextContainer.textSize
             onFingerDown(x, y)
         }
-        drawing.requestInvalidate()
+        listener.requestText()
     }
 
     override fun destroyDrawingObject() {
@@ -78,27 +79,23 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val x = event.x
-        val y = event.y
-
-        when (event.action) {
-            MotionEvent.ACTION_MOVE -> draw?.onFingerMove(x, y)
-            MotionEvent.ACTION_UP -> {
-                draw?.onFingerUp(x, y)
-                draw?.let(drawing::attachToCanvas)
-            }
-        }
-
-        drawing.requestInvalidate()
         return true
     }
 
     override fun onTextRetrieved(text: String, textSize: Float?) {
+        draw?.text = text
         textSize?.let { this@TextContainer.textSize = textSize }
+        drawing.requestInvalidate()
+    }
+
+    override fun onApply() {
+        draw?.let(drawing::attachToCanvas)
+        drawing.requestInvalidate()
     }
 
     interface InteractionListener {
         fun attachComponent(paint: IPaint, callback: TextDrawCallback)
+        fun requestText()
         fun detachComponent()
     }
 }
