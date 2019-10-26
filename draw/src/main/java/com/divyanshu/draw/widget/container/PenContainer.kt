@@ -59,8 +59,7 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
 
     override fun onDraw(canvas: Canvas, draw: IMode) {
         if (draw !is PathMode) return
-        draw.decorate(paint)
-        canvas.drawPath(draw, paint)
+        draw.onDraw(canvas, paint)
     }
 
     override fun onDraw(canvas: Canvas) {

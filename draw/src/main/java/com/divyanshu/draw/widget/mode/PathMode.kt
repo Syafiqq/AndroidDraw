@@ -1,5 +1,6 @@
 package com.divyanshu.draw.widget.mode
 
+import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import com.divyanshu.draw.widget.contract.DrawingMode
@@ -46,8 +47,13 @@ class PathMode(override val mode: DrawingMode) : Path(), IMode {
         initY = y
     }
 
-    fun decorate(paint: Paint) {
+    private fun decorate(paint: Paint) {
         paint.strokeWidth = strokeWidth
         paint.color = color
+    }
+
+    fun onDraw(canvas: Canvas, paint: Paint) {
+        decorate(paint)
+        canvas.drawPath(this, paint)
     }
 }
