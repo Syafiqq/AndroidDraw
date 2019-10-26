@@ -95,8 +95,8 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
 
     override fun onTextRetrieved(text: String, textSize: Float?) {
         draw?.run {
-            initializeText(text, paint)
             textSize?.let { this@TextContainer.textSize = textSize }
+            initializeText(text, paint)
             drawing.requestInvalidate()
         }
     }
