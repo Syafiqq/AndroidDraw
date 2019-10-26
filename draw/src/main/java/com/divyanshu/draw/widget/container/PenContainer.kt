@@ -70,7 +70,7 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
     override fun createDrawingObject(x: Float, y: Float) {
         if (draw != null) return
 
-        listener.attachPaint(this)
+        listener.attachComponent(this)
         draw = PathMode(DrawingMode.LINE).apply {
             color = this@PenContainer.color
             strokeWidth = this@PenContainer.strokeWidth
@@ -101,7 +101,7 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
     }
 
     interface InteractionListener {
-        fun attachPaint(paint: IPaint)
+        fun attachComponent(paint: IPaint)
         fun detachComponent()
     }
 }

@@ -261,7 +261,7 @@ class DrawingActivity : AppCompatActivity(),
     private val Int.toPx: Float
         get() = (this * Resources.getSystem().displayMetrics.density)
 
-    override fun attachPaint(paint: IPaint) {
+    override fun attachComponent(paint: IPaint) {
         this.paint = paint.apply {
             color = circle_view_width.getColor()
             alpha = seekBar_opacity.progress

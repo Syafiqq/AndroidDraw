@@ -58,7 +58,7 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
     override fun createDrawingObject(x: Float, y: Float) {
         if (draw != null) return
 
-        listener.attachPaint(this)
+        listener.attachComponent(this)
         draw = PathMode(DrawingMode.ERASE).apply {
             color = this@EraserContainer.color
             strokeWidth = this@EraserContainer.strokeWidth
@@ -89,7 +89,7 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
     }
 
     interface InteractionListener {
-        fun attachPaint(paint: IPaint)
+        fun attachComponent(paint: IPaint)
         fun detachComponent()
     }
 }
