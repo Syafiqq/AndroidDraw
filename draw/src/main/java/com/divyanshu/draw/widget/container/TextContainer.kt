@@ -27,6 +27,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
             val alphaColor = ColorUtils.setAlphaComponent(value, alpha)
             _color = alphaColor
             draw?.color = alphaColor
+            drawing.requestInvalidate()
         }
     override var strokeWidth = 0F
     override var alpha: Int
