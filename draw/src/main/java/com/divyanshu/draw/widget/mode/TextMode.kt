@@ -7,6 +7,8 @@ import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IMode
 
 class TextMode(override val mode: DrawingMode) : IMode {
+    private val selThreshold = 32
+
     var color = 0
     var textSize = 0F
         private set
@@ -19,22 +21,37 @@ class TextMode(override val mode: DrawingMode) : IMode {
 
     private var curX = 0F
     private var curY = 0F
+    private var difX = 0F
+    private var difY = 0F
 
     fun onFingerDown(x: Float, y: Float) {
-        currentPos(x, y)
+        isInBound = isInBound(x, y)
+        if(isInBound)
+            diffPos(x, y)
     }
 
     fun onFingerMove(x: Float, y: Float) {
-        currentPos(x, y)
+        if(isInBound)
+            currentPos(x + difX, y + difY)
     }
 
     fun onFingerUp(x: Float, y: Float) {
-        currentPos(x, y)
+        isInBound = false
     }
 
     fun currentPos(x: Float, y: Float) {
         curX = x
         curY = y
+    }
+
+    private fun diffPos(x: Float, y: Float) {
+        difX = curX - x
+        difY = curY - y
+    }
+
+    private fun isInBound(x: Float, y: Float): Boolean {
+        return x > (curX - selThreshold) && x < (curX + dim.width() + selThreshold) &&
+                y > (curY - selThreshold) && y < (curY + dim.height() + selThreshold)
     }
 
     private fun decorate(paint: Paint) {
