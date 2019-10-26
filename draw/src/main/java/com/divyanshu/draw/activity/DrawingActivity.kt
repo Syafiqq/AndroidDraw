@@ -14,17 +14,24 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afollestad.materialdialogs.input.getInputField
 import com.divyanshu.draw.R
+import com.divyanshu.draw.extension.com.afollestad.materialdialogs.input.resizeableInput
 import com.divyanshu.draw.widget.container.EraserContainer
 import com.divyanshu.draw.widget.container.PenContainer
+import com.divyanshu.draw.widget.container.TextContainer
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IPaint
+import com.divyanshu.draw.widget.contract.ITextDrawCallback
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
 
 class DrawingActivity : AppCompatActivity(),
         PenContainer.InteractionListener,
-        EraserContainer.InteractionListener {
+        EraserContainer.InteractionListener,
+        TextContainer.InteractionListener {
+
+    private var textDrawCallback: ITextDrawCallback? = null
     private var paint: IPaint? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -266,6 +273,20 @@ class DrawingActivity : AppCompatActivity(),
             color = circle_view_width.getColor()
             alpha = seekBar_opacity.progress
             strokeWidth = seekBar_width.progress.toFloat()
+        }
+    }
+
+    override fun attachComponent(paint: IPaint, callback: ITextDrawCallback) {
+        attachComponent(paint)
+        this.textDrawCallback = callback
+    }
+
+    override fun requestText() {
+        MaterialDialog(this).show {
+            resizeableInput { dialog, text ->
+                textDrawCallback?.onTextRetrieved(text.toString(), dialog.getInputField().textSize)
+            }
+            positiveButton(R.string.app_name)
         }
     }
 
