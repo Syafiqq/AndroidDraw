@@ -28,20 +28,33 @@ class TextMode(override val mode: DrawingMode) : IMode {
     private var curY = 0F
     private var difX = 0F
     private var difY = 0F
+    private var pointerId = -1
 
-    fun onFingerDown(x: Float, y: Float) {
+    fun onFingerDown(x: Float, y: Float, pointer: Int) {
         isInBound = isInBound(x, y)
-        if(isInBound)
+        if (isInBound) {
+            updatePointer(pointer)
             diffPos(x, y)
+        }
     }
 
-    fun onFingerMove(x: Float, y: Float) {
-        if(isInBound)
+    fun onFingerMove(x: Float, y: Float, pointer: Int) {
+        if (isInBound) {
+            if(pointer != pointerId) {
+                updatePointer(pointer)
+                diffPos(x, y)
+            }
             currentPos(x + difX, y + difY)
+        }
     }
 
-    fun onFingerUp(x: Float, y: Float) {
+    fun onFingerUp(x: Float, y: Float, pointer: Int) {
         isInBound = false
+        updatePointer(-1)
+    }
+
+    private fun updatePointer(pointer: Int) {
+        pointerId = pointer
     }
 
     fun currentPos(x: Float, y: Float) {

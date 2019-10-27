@@ -53,6 +53,7 @@ class ImageMode(override val mode: DrawingMode) : IMode {
 
     fun onFingerUp(x: Float, y: Float, pointer: Int) {
         isInBound = false
+        updatePointer(-1)
     }
 
     fun currentPos(x: Float, y: Float) {
