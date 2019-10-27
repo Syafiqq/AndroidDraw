@@ -55,9 +55,9 @@ class ImageContainer(override val context: Context, override val drawing: ICanva
         val y = event.y
 
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> draw?.onFingerDown(x, y)
-            MotionEvent.ACTION_MOVE -> draw?.onFingerMove(x, y)
-            MotionEvent.ACTION_UP ->  draw?.onFingerUp(x, y)
+            MotionEvent.ACTION_DOWN -> draw?.onFingerDown(x, y, event.getPointerId(0))
+            MotionEvent.ACTION_MOVE -> draw?.onFingerMove(x, y, event.getPointerId(0))
+            MotionEvent.ACTION_UP ->  draw?.onFingerUp(x, y, event.getPointerId(0))
         }
 
         drawing.requestInvalidate()

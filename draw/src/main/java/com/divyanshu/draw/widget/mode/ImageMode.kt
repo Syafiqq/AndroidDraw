@@ -19,7 +19,7 @@ class ImageMode(override val mode: DrawingMode) : IMode {
     var bitmap: Bitmap? = null
     private var rectScaled: Rect = Rect()
 
-    private var scale:Int = 0
+    private var scale: Int = 0
     private val scaledMax = 10
     private val scaleSize = 64
 
@@ -31,19 +31,27 @@ class ImageMode(override val mode: DrawingMode) : IMode {
     private var difY = 0
     private var scaledX = 0
     private var scaledY = 0
+    private var pointerId = -1
 
-    fun onFingerDown(x: Float, y: Float) {
+    fun onFingerDown(x: Float, y: Float, pointer: Int) {
         isInBound = isInBound(x, y)
-        if(isInBound)
+        if (isInBound) {
+            updatePointer(pointer)
             diffPos(x, y)
+        }
     }
 
-    fun onFingerMove(x: Float, y: Float) {
-        if(isInBound)
+    fun onFingerMove(x: Float, y: Float, pointer: Int) {
+        if (isInBound) {
+            if(pointer != pointerId) {
+                updatePointer(pointer)
+                diffPos(x, y)
+            }
             currentPos(x, y)
+        }
     }
 
-    fun onFingerUp(x: Float, y: Float) {
+    fun onFingerUp(x: Float, y: Float, pointer: Int) {
         isInBound = false
     }
 
@@ -51,6 +59,10 @@ class ImageMode(override val mode: DrawingMode) : IMode {
         curX = x
         curY = y
         updateRectScale()
+    }
+
+    private fun updatePointer(pointer: Int) {
+        pointerId = pointer
     }
 
     private fun diffPos(x: Float, y: Float) {
@@ -71,7 +83,7 @@ class ImageMode(override val mode: DrawingMode) : IMode {
     }
 
     private fun updateRectScale() {
-        if(bitmap == null) return
+        if (bitmap == null) return
         val x = this.curX - difX
         val y = this.curY - difY
         with(rectScaled)
@@ -105,9 +117,9 @@ class ImageMode(override val mode: DrawingMode) : IMode {
     }
 
     private fun updateScale() {
-        if(bitmap == null) return
+        if (bitmap == null) return
         scaledX = scaleSize * scale
-        scaledY = (scaleSize * (bitmap?.height ?: 0)/(bitmap?.width ?: 0)) * scale
+        scaledY = (scaleSize * (bitmap?.height ?: 0) / (bitmap?.width ?: 0)) * scale
     }
 
     fun onDraw(canvas: Canvas, paint: Paint) {
