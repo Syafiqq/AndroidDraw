@@ -84,12 +84,12 @@ class ImageContainer(override val context: Context, override val drawing: ICanva
     }
 
     override fun onScaleUp() {
-        draw?.scaledUp(paint)
+        draw?.scaledUp()
         drawing.requestInvalidate()
     }
 
     override fun onScaleDown() {
-        draw?.scaledDown(paint)
+        draw?.scaledDown()
         drawing.requestInvalidate()
     }
 
