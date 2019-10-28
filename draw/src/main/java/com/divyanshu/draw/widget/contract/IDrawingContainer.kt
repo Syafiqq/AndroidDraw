@@ -6,7 +6,7 @@ import android.view.MotionEvent
 
 
 interface IDrawingContainer {
-    fun createDrawingObject(x: Float, y: Float)
+    fun createDrawingObject(x: Float, y: Float, event:MotionEvent)
     fun destroyDrawingObject()
     fun onDraw(canvas: Canvas, draw: IMode)
     fun onDraw(canvas: Canvas)
