@@ -12,7 +12,7 @@
         android:id="@+id/zoom_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/color_white"
+        android:background="@color/color_green"
         android:scrollbars="horizontal|vertical"
         app:hasClickableChildren="true"
         app:horizontalPanEnabled="true"
@@ -29,8 +29,8 @@
 
         <RelativeLayout
             android:id="@+id/cnt"
-            android:layout_width="1852dp"
-            android:layout_height="1380dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@color/color_white">
             <com.divyanshu.draw.widget.DrawView
                 android:id="@+id/draw_view"
