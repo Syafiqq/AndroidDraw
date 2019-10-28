@@ -99,6 +99,10 @@ class DrawingActivity : AppCompatActivity(),
             textDrawCallback?.onScaleUp()
             imageDrawCallback?.onScaleUp()
         }
+
+        Handler().postDelayed({
+            zoom_layout.zoomTo(2F, true)
+        }, 100L)
     }
 
     private fun setUpSpinner() {
