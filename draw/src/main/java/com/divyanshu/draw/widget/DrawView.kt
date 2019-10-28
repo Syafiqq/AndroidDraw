@@ -41,6 +41,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
             if (_drawingMode == value) return
             _drawingMode = value
             drawingTool?.destroyDrawingObject()
+            requestInvalidate()
             drawingTool = when (value) {
                 DrawingMode.LINE -> linePath
                 DrawingMode.ERASE -> eraserPath
