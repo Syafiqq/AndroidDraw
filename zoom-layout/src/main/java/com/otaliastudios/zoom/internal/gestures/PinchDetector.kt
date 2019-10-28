@@ -27,7 +27,7 @@ internal class PinchDetector(
         private val stateController: StateController,
         private val matrixController: MatrixController
 ) : ScaleGestureDetector.OnScaleGestureListener {
-
+    var oldZoom: Float? = null
     private val detector = ScaleGestureDetector(context, this)
     init {
         if (Build.VERSION.SDK_INT >= 19) detector.isQuickScaleEnabled = false
@@ -69,12 +69,16 @@ internal class PinchDetector(
             currentFocusOffset.set(initialFocusPoint - newAbsFocusPoint)
             LOG.i("onScale:", "Got focus offset:", currentFocusOffset)
         }
-        val newZoom = matrixController.zoom * detector.scaleFactor
+        if(oldZoom == null) {
+            oldZoom = matrixController.zoom * detector.scaleFactor
+        }
+        val newZoom = if(kotlin.math.abs(detector.currentSpan - detector.previousSpan) < 3.0) oldZoom!! else matrixController.zoom * detector.scaleFactor
         matrixController.applyUpdate {
             zoomTo(newZoom, true)
             panBy(currentFocusOffset, true)
             pivot(detector.focusX, detector.focusY)
         }
+        oldZoom = newZoom
         return true
     }
 
