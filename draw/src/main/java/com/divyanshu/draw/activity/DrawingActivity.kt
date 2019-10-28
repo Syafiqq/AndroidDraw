@@ -14,9 +14,12 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
+import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afollestad.materialdialogs.input.getInputField
 import com.divyanshu.draw.R
+import com.divyanshu.draw.extension.com.afollestad.materialdialogs.input.resizeableInput
 import com.divyanshu.draw.widget.container.EraserContainer
 import com.divyanshu.draw.widget.container.ImageContainer
 import com.divyanshu.draw.widget.container.PenContainer
