@@ -61,8 +61,8 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         draw?.let { onDraw(canvas, it) }
     }
 
-    override fun createDrawingObject(x: Float, y: Float) {
-        if (draw != null) return
+    override fun createDrawingObject(x: Float, y: Float, event: MotionEvent) {
+        if (draw != null || event.pointerCount > 1) return
 
         listener.attachComponent(this, this)
         draw = TextMode(DrawingMode.TEXT).apply {
@@ -80,6 +80,9 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (draw?.text == null) return true
+        if (event.pointerCount > 1) {
+            return false
+        }
 
         val x = event.x
         val y = event.y

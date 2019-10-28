@@ -54,8 +54,8 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
         draw?.let { onDraw(canvas, it) }
     }
 
-    override fun createDrawingObject(x: Float, y: Float) {
-        if (draw != null) return
+    override fun createDrawingObject(x: Float, y: Float, event: MotionEvent) {
+        if (draw != null || event.pointerCount > 1) return
 
         listener.attachComponent(this)
         draw = PathMode(DrawingMode.ERASE).apply {
@@ -73,6 +73,10 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (draw == null) return true
+        if (event.pointerCount > 1) {
+            destroyDrawingObject()
+            return true
+        }
 
         val x = event.x
         val y = event.y

@@ -129,7 +129,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
         performClick()
         if (drawingTool == null) return true
 
-        drawingTool?.createDrawingObject(event.x, event.y)
+        drawingTool?.createDrawingObject(event.x, event.y, event)
 
         return drawingTool?.onTouchEvent(event) ?: true
     }
