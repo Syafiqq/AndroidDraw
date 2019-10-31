@@ -43,10 +43,10 @@ public class TextRect
      * @param maxHeight - maximum height in pixels
      * @returns height of text in pixels
      */
-    public int prepare(
+    public float prepare(
             final String text,
-            final int maxWidth,
-            final int maxHeight,
+            final float maxWidth,
+            final float maxHeight,
             Paint paint)
     {
         metrics = paint.getFontMetricsInt();
@@ -63,7 +63,7 @@ public class TextRect
                 1,
                 bounds );
 
-        final int maximumInLine = maxWidth / bounds.width();
+        final int maximumInLine = (int) Math.ceil(maxWidth / bounds.width());
         final int length = text.length();
 
         if( length > 0 )
@@ -189,15 +189,15 @@ public class TextRect
      */
     public void draw(
             final Canvas canvas,
-            final int left,
-            final int top )
+            final float left,
+            final float top )
     {
         if( textHeight == 0 )
             return;
 
-        final int before = -metrics.ascent;
-        final int after = metrics.descent + metrics.leading;
-        int y = top;
+        final float before = -metrics.ascent;
+        final float after = metrics.descent + metrics.leading;
+        float y = top;
 
         --lines;
         for( int n = 0; n <= lines; ++n )
