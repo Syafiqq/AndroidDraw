@@ -48,7 +48,6 @@ class TextMode(override val mode: DrawingMode) : IMode {
                 updatePointer(pointer)
                 diffPos(x, y)
             }
-            Timber.d("$curX, $curY, $rectWidth, $rectHeight, $x, $y, $difX, $difY")
             currentPos(x + difX, y + difY)
         }
     }
@@ -130,7 +129,7 @@ class TextMode(override val mode: DrawingMode) : IMode {
 
     fun onDraw(canvas: Canvas, paint: Paint) {
         text?.let {
-            decorate(paint)
+            updateTextDimension(paint)
             textRect.draw(canvas, curX, curY)
         }
     }
