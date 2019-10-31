@@ -36,17 +36,6 @@ public class TextRect
     private boolean wasCut = false;
 
     /**
-     * Create reusable text rectangle (use one instance per font).
-     *
-     * @param paint - paint specifying the font
-     */
-    public TextRect(final Paint paint )
-    {
-        metrics = paint.getFontMetricsInt();
-        this.paint = paint;
-    }
-
-    /**
      * Calculate height of text block and prepare to draw it.
      *
      * @param text - text to draw
@@ -57,8 +46,11 @@ public class TextRect
     public int prepare(
             final String text,
             final int maxWidth,
-            final int maxHeight )
+            final int maxHeight,
+            Paint paint)
     {
+        metrics = paint.getFontMetricsInt();
+        this.paint = paint;
         lines = 0;
         textHeight = 0;
         this.text = text;
