@@ -2,12 +2,14 @@ package com.divyanshu.draw.widget.mode
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
+import com.divyanshu.draw.widget.container.TextRect
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IMode
+import timber.log.Timber
 import kotlin.math.abs
 
 class TextMode(override val mode: DrawingMode) : IMode {
+    private val textRect = TextRect()
     private val selThreshold = 32
 
     var color = 0
@@ -16,7 +18,6 @@ class TextMode(override val mode: DrawingMode) : IMode {
 
     var text: String? = null
         private set
-    private var dim = Rect()
 
     private var scale:Int = 0
     private val scaledMax = 10
@@ -29,6 +30,9 @@ class TextMode(override val mode: DrawingMode) : IMode {
     private var difX = 0F
     private var difY = 0F
     private var pointerId = -1
+
+    private val rectWidth = 200F
+    private var rectHeight = 0F
 
     fun onFingerDown(x: Float, y: Float, pointer: Int) {
         isInBound = isInBound(x, y)
@@ -44,6 +48,7 @@ class TextMode(override val mode: DrawingMode) : IMode {
                 updatePointer(pointer)
                 diffPos(x, y)
             }
+            Timber.d("$curX, $curY, $rectWidth, $rectHeight, $x, $y, $difX, $difY")
             currentPos(x + difX, y + difY)
         }
     }
@@ -68,8 +73,8 @@ class TextMode(override val mode: DrawingMode) : IMode {
     }
 
     private fun isInBound(x: Float, y: Float): Boolean {
-        return x > (curX - selThreshold) && x < (curX + dim.width() + selThreshold) &&
-                y > (curY - selThreshold) && y < (curY + dim.height() + selThreshold)
+        return x > (curX - selThreshold) && x < (curX + rectWidth + selThreshold) &&
+                y > (curY - selThreshold) && y < (curY + rectHeight + selThreshold)
     }
 
     private fun decorate(paint: Paint) {
@@ -96,7 +101,7 @@ class TextMode(override val mode: DrawingMode) : IMode {
     private fun updateTextDimension(paint: Paint) {
         text?.let {
             decorate(paint)
-            paint.getTextBounds(it, 0, it.length, dim)
+            rectHeight = textRect.prepare(it, rectWidth, Int.MAX_VALUE.toFloat(), paint)
         }
     }
 
@@ -126,7 +131,7 @@ class TextMode(override val mode: DrawingMode) : IMode {
     fun onDraw(canvas: Canvas, paint: Paint) {
         text?.let {
             decorate(paint)
-            canvas.drawText(it, curX, curY, paint)
+            textRect.draw(canvas, curX, curY)
         }
     }
 }
