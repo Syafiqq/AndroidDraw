@@ -14,12 +14,9 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
-import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.input.getInputField
 import com.divyanshu.draw.R
-import com.divyanshu.draw.extension.com.afollestad.materialdialogs.input.resizeableInput
 import com.divyanshu.draw.widget.container.EraserContainer
 import com.divyanshu.draw.widget.container.ImageContainer
 import com.divyanshu.draw.widget.container.PenContainer
@@ -30,6 +27,10 @@ import com.divyanshu.draw.widget.contract.IPaint
 import com.divyanshu.draw.widget.contract.ITextDrawCallback
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.color_palette_view.*
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 
 class DrawingActivity : AppCompatActivity(),
         PenContainer.InteractionListener,
@@ -44,6 +45,13 @@ class DrawingActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawing)
+
+        Handler().postDelayed({
+            val x = this.zoom_layout.width
+            val y = this.zoom_layout.height * 0.5
+
+            defineCanvasSize(x.toInt(), y.toInt())
+        }, 250)
 
         image_close_drawing.setOnClickListener {
             //finish()
@@ -100,9 +108,32 @@ class DrawingActivity : AppCompatActivity(),
             imageDrawCallback?.onScaleUp()
         }
 
+        spinner.setSelection(-1)
+    }
+
+    private fun defineCanvasSize(x: Int, y: Int){
+        val ax = this.zoom_layout.width
+        val ay = this.zoom_layout.height
+
+        var mul = min(x/ax.toDouble(), y/ay.toDouble())
+        mul = if(mul < 1) 1.0 / mul else 1.0
+
+        val fx = floor(x * mul).toInt()
+        val fy = floor(y * mul).toInt()
+
+        val zoom = max(fx.toDouble()/ax.toDouble(), fy.toDouble()/ay.toDouble())
+
         Handler().postDelayed({
-            zoom_layout.zoomTo(2F, true)
-        }, 100L)
+            cnt.layoutParams.width = fx
+            cnt.layoutParams.height = fy
+            cnt.requestLayout()
+            zoom_layout.onGlobalLayout()
+            Handler().postDelayed({
+                zoom_layout.setMaxZoom((3 * zoom).toFloat(), 0)
+                zoom_layout.setMinZoom((0.8 * zoom).toFloat(), 0)
+                zoom_layout.zoomTo((1 * zoom).toFloat(), true)
+            }, 250)
+        }, 250)
     }
 
     private fun setUpSpinner() {
