@@ -47,8 +47,8 @@ class DrawingActivity : AppCompatActivity(),
         setContentView(R.layout.activity_drawing)
 
         Handler().postDelayed({
-            val x = this.zoom_layout.width * 2.0
-            val y = this.zoom_layout.height * 1.0
+            val x = this.zoom_layout.width * 0.5
+            val y = this.zoom_layout.height * 0.3
 
             defineCanvasSize(x.toInt(), y.toInt())
         }, 250)

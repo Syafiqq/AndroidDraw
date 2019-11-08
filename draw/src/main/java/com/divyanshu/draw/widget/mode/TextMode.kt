@@ -2,15 +2,15 @@ package com.divyanshu.draw.widget.mode
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import com.divyanshu.draw.widget.container.TextRect
 import com.divyanshu.draw.widget.contract.DrawingMode
 import com.divyanshu.draw.widget.contract.IMode
-import timber.log.Timber
+import com.divyanshu.draw.widget.plugin.TextRect
 import kotlin.math.abs
 
 class TextMode(override val mode: DrawingMode) : IMode {
     private val textRect = TextRect()
     private val selThreshold = 32
+    private val widthThreshold = 32F
 
     var color = 0
     var textSize = 0F
@@ -31,7 +31,9 @@ class TextMode(override val mode: DrawingMode) : IMode {
     private var difY = 0F
     private var pointerId = -1
 
-    private val rectWidth = 200F
+    private var widthScale:Int = 0
+    private val widthScaleMax = 30
+    private var rectWidth = 200F
     private var rectHeight = 0F
 
     fun onFingerDown(x: Float, y: Float, pointer: Int) {
@@ -91,9 +93,10 @@ class TextMode(override val mode: DrawingMode) : IMode {
         updateTextDimension(paint)
     }
 
-    fun updateTextAndSize(text: String, textSize: Float, paint: Paint) {
+    fun updateTextWidthAndSize(text: String, textSize: Float, textWidth: Float, paint: Paint) {
         this.text = text
         this.textSize = textSize
+        this.rectWidth = textWidth
         updateTextDimension(paint)
     }
 
@@ -122,6 +125,29 @@ class TextMode(override val mode: DrawingMode) : IMode {
             textSize + (_scale * scaleSize) < 4 -> return
             else -> {
                 --scale
+                updateTextDimension(paint)
+            }
+        }
+    }
+
+    fun textWidthIncrease(paint: Paint) {
+        val _scale = widthScale + 1
+        when {
+            abs(_scale) > widthScaleMax -> return
+            else -> {
+                rectWidth += widthThreshold
+                ++widthScale
+                updateTextDimension(paint)
+            }
+        }
+    }
+
+    fun textWidthDecrease(paint: Paint) {
+        when {
+            rectWidth - widthThreshold < 16 -> return
+            else -> {
+                rectWidth -= widthThreshold
+                --widthScale
                 updateTextDimension(paint)
             }
         }

@@ -13,7 +13,6 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 class ImageMode(override val mode: DrawingMode) : IMode {
-    private val sizeThreshold = 1024
     private val selThreshold = 32
 
     var bitmap: Bitmap? = null
@@ -78,8 +77,8 @@ class ImageMode(override val mode: DrawingMode) : IMode {
                 y > (r.top - selThreshold) && y < (r.bottom + selThreshold)
     }
 
-    fun updateBitmapFromStream(image: InputStream) {
-        bitmap = ImageUtil.decodeSampledBitmapFromStream(image, sizeThreshold, sizeThreshold)
+    fun updateBitmapDirectly(image: Bitmap) {
+        bitmap = image
         updateRectScale()
     }
 

@@ -33,7 +33,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
     private val textContainer = TextContainer(context, this)
     private val imageContainer = ImageContainer(context, this)
 
-    private var drawingTool: IDrawingContainer? = linePath
+    private var drawingTool: IDrawingContainer<*>? = null
     private var _drawingMode: DrawingMode? = null
     var drawingMode: DrawingMode?
         get() = _drawingMode
@@ -41,6 +41,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
             if (_drawingMode == value) return
             _drawingMode = value
             drawingTool?.destroyDrawingObject()
+            drawingTool?.detachDrawingTool()
             requestInvalidate()
             drawingTool = when (value) {
                 DrawingMode.LINE -> linePath
@@ -49,6 +50,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
                 DrawingMode.IMAGE -> imageContainer
                 else -> null
             }
+            drawingTool?.attachDrawingTool()
         }
 
     init {
@@ -129,13 +131,19 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs), IC
         performClick()
         if (drawingTool == null) return true
 
-        drawingTool?.createDrawingObject(event.x, event.y, event)
+        if(event.action == MotionEvent.ACTION_DOWN) {
+            drawingTool?.createDrawingObject(event.x, event.y, event)
+        }
 
         return drawingTool?.onTouchEvent(event) ?: true
     }
 
     override fun performClick(): Boolean {
         return super.performClick()
+    }
+
+    fun isBlank(): Boolean {
+        return drawingTool !is EraserContainer && drawingTool?.draw == null && holder.size == 0
     }
 
     fun getBitmap(): Bitmap {

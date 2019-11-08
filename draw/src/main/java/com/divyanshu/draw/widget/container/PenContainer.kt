@@ -9,8 +9,8 @@ import androidx.core.graphics.ColorUtils
 import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.PathMode
 
-class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
-    private var draw: PathMode? = null
+class PenContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer<PathMode>, IPaint {
+    override var draw: PathMode? = null
 
     private val listener: InteractionListener
 
@@ -69,7 +69,7 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
     override fun createDrawingObject(x: Float, y: Float, event: MotionEvent) {
         if (draw != null || event.pointerCount > 1) return
 
-        listener.attachComponent(this)
+        attachDrawingTool()
         draw = PathMode(DrawingMode.LINE).apply {
             color = this@PenContainer.color
             strokeWidth = this@PenContainer.strokeWidth
@@ -78,9 +78,17 @@ class PenContainer(override val context: Context, override val drawing: ICanvas)
         drawing.requestInvalidate()
     }
 
+    override fun attachDrawingTool() {
+        listener.attachComponent(this)
+    }
+
+    override fun detachDrawingTool() {
+        listener.detachComponent()
+    }
+
     override fun destroyDrawingObject() {
         draw = null
-        listener.detachComponent()
+        detachDrawingTool()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

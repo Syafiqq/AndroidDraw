@@ -9,8 +9,8 @@ import android.view.MotionEvent
 import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.PathMode
 
-class EraserContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint {
-    private var draw: PathMode? = null
+class EraserContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer<PathMode>, IPaint {
+    override var draw: PathMode? = null
 
     private val listener: InteractionListener
 
@@ -57,7 +57,7 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
     override fun createDrawingObject(x: Float, y: Float, event: MotionEvent) {
         if (draw != null || event.pointerCount > 1) return
 
-        listener.attachComponent(this)
+        attachDrawingTool()
         draw = PathMode(DrawingMode.ERASE).apply {
             color = this@EraserContainer.color
             strokeWidth = this@EraserContainer.strokeWidth
@@ -66,9 +66,17 @@ class EraserContainer(override val context: Context, override val drawing: ICanv
         drawing.requestInvalidate()
     }
 
+    override fun attachDrawingTool() {
+        listener.attachComponent(this)
+    }
+
+    override fun detachDrawingTool() {
+        listener.detachComponent()
+    }
+
     override fun destroyDrawingObject() {
         draw = null
-        listener.detachComponent()
+        detachDrawingTool()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

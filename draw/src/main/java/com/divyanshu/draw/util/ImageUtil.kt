@@ -2,6 +2,7 @@ package com.divyanshu.draw.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import java.io.BufferedInputStream
 import java.io.InputStream
 
 object ImageUtil {
@@ -26,6 +27,7 @@ object ImageUtil {
     @JvmStatic
     fun decodeSampledBitmapFromStream(image: InputStream, reqWidth: Int, reqHeight: Int): Bitmap? {
         // First decode with inJustDecodeBounds=true to check dimensions
+        val image = if(image.markSupported()) image else BufferedInputStream(image)
         image.mark(1)
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true

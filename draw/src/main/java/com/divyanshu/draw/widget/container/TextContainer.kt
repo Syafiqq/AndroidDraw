@@ -9,8 +9,8 @@ import androidx.core.graphics.ColorUtils
 import com.divyanshu.draw.widget.contract.*
 import com.divyanshu.draw.widget.mode.TextMode
 
-class TextContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer, IPaint, ITextDrawCallback {
-    private var draw: TextMode? = null
+class TextContainer(override val context: Context, override val drawing: ICanvas) : IDrawingContainer<TextMode>, IPaint, ITextDrawCallback {
+    override var draw: TextMode? = null
 
     private val listener: InteractionListener
 
@@ -64,7 +64,7 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
     override fun createDrawingObject(x: Float, y: Float, event: MotionEvent) {
         if (draw != null || event.pointerCount > 1) return
 
-        listener.attachComponent(this, this)
+        attachDrawingTool()
         draw = TextMode(DrawingMode.TEXT).apply {
             color = this@TextContainer.color
             updateTextSize(this@TextContainer.textSize, paint)
@@ -75,6 +75,14 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
 
     override fun destroyDrawingObject() {
         draw = null
+        detachDrawingTool()
+    }
+
+    override fun attachDrawingTool() {
+        listener.attachComponent(this, this)
+    }
+
+    override fun detachDrawingTool() {
         listener.detachComponent()
     }
 
@@ -97,12 +105,9 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
         return true
     }
 
-    override fun onTextRetrieved(text: String, textSize: Float?) {
+    override fun onTextRetrieved(text: String, textSize: Float, textWidth: Float) {
         draw?.run {
-            if(textSize == null)
-                updateText(text, paint)
-            else
-                updateTextAndSize(text, textSize, paint)
+            updateTextWidthAndSize(text, textSize, textWidth, paint)
             drawing.requestInvalidate()
         }
     }
@@ -126,6 +131,16 @@ class TextContainer(override val context: Context, override val drawing: ICanvas
 
     override fun onScaleDown() {
         draw?.scaledDown(paint)
+        drawing.requestInvalidate()
+    }
+
+    override fun onTextWidthIncrease() {
+        draw?.textWidthIncrease(paint)
+        drawing.requestInvalidate()
+    }
+
+    override fun onTextWidthDecrease() {
+        draw?.textWidthDecrease(paint)
         drawing.requestInvalidate()
     }
 
